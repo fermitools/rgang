@@ -1,0 +1,3 @@
+## Which files should we track, for the purposes of 'maketar'?
+#FILES_LOCAL = usr Makefile.local
+FILES_LOCAL = Makefile.local

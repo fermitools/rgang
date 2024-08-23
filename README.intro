@@ -1,0 +1,30 @@
+
+Nearly every system administrator tasked with operating a cluster of Unix
+machines will eventually find or write a tool which will execute the same
+command on all of the nodes.  At Fermilab we call this tool "rgang".  "rgang"
+relies on files in /usr/local/etc/farmlets/ which define sets of nodes in the
+cluster.  For example, "all" (/usr/local/etc/farmlets/all) lists all of
+ the nodes, "row1" lists all of the nodes in row 1, and so forth.
+The administrator issues a command to a group of nodes using this syntax:
+
+  rgang farmlet_name 'command arg1 arg2 ... argn'
+
+On each node in the file farmlet_name, rgang executes the given command via
+rsh or ssh, displaying the result delimited by a node-specific header.
+The original "rgang" at fermilab was implemented in Bourne shell.
+
+Because the original "rgang" executes the commands on the specified nodes
+serially, execution time is proportional to the number of nodes.
+We have implemented, in Python, a parallel version of "rgang". 
+This version forks separate rsh/ssh children, which execute in parallel.
+After successfully waiting on returns from each child or after timing out,
+this latest version of rgang displays the node responses in identical fashion
+to the original "shell" version of rgang. In addition, the latest rgang returns
+the OR of all of the exit status values of the commands executed on each of the
+nodes. Simple commands execute via this rgang on all 80
+nodes of our "PCQCD" cluster (just one specific example cluster) in about
+3 seconds.
+
+To allow scaling to kiloclusters, the new rgang can utilize a tree-structure,
+via an "nway" switch.  When so invoked, rgang uses rsh/ssh to spawn copies
+of itself on multiple nodes.  These copies in turn spawn additional copies.

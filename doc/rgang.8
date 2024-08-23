@@ -1,0 +1,25 @@
+." Manpage for rgang
+.TH man 8 "10 Jun 2013" "1.158" "rgang man page"
+.SH NAME
+rgang - execute commands on a group of hosts
+.SH SYNOPSIS
+rgang [options] <nodespec> [cmd]
+
+rgang [options] -<c|C> <nodespec> 'srcfile' 'dstdfile'
+
+rgang [--skip <nodespec>] --list [<nodespec>]
+
+rgang -d
+.SH DESCRIPTION
+rgang is a tool which allows one to execute commands on or distribute
+files to many nodes (computers). It incorporates an algorithm to build a
+tree-like structure (or "worm" structure) to allow the distribution 
+processing time to scale very well to 1000 or more nodes.
+.SH OPTIONS
+See 'rgang -h' and/or 'rgang -hv'
+.SH AUTHOR
+Ron Rechenmacher <ron@fnal.gov>
+
+Tim Skirvin <tskirvin@fnal.gov>
+.SH LICENSE
+See /usr/share/doc/rgang-*/LICENSE

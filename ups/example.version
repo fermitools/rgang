@@ -1,0 +1,18 @@
+# This example version file was produced using the following
+# ups declare command:
+#     ups declare -r /p/rgang/v1_0 rgang v1_0 -2 -m rgang.table -c
+FILE = version
+PRODUCT = rgang
+VERSION = v1_0
+
+#*************************************************
+#
+FLAVOR = Linux+2
+QUALIFIERS = ""
+  DECLARER = ron
+  DECLARED = 2001-06-20 19.14.12 GMT
+  MODIFIER = ron
+  MODIFIED = 2001-06-20 19.14.12 GMT
+  PROD_DIR = /p/rgang/v1_0
+  UPS_DIR = ups
+  TABLE_FILE = rgang.table

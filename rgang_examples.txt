@@ -1,0 +1,298 @@
+RGANG BY EXAMPLE:
+
+In the following examples, nodes names like "qcd0101" should be
+changed as appropriate.
+
+
+There are currently 2 major modes for rgang.py:
+     1) command mode
+ and 2) copy mode
+
+The command syntax for the modes are:
+      1) rgang.py    [options] <nodes-spec> <command>
+ and 2a) rgang.py -c [options] <nodes-spec> <file> <dir|file>
+  or 2b) rgang.py -c [options] <nodes-spec> <file> <file>... <dir>
+
+BASIC COMMAND MODE EXAMPLE:
+                 rgang qcd0101 echo hi
+ compare to rsh: rsh   qcd0101 echo hi
+
+BASIC COPY MODE EXAMPLE:
+                 rgang -c qcd0101 .bashrc t.t
+ compare to rcp: rcp .bashrc qcd0101:t.t
+
+
+Command mode usage is very similar to traditional rsh:
+    rsh <node> <cmd>
+will yield the same result as
+    rgang <node> <cmd>
+with the stipulation that the <cmd> does not csh syntax.
+rgang is now specifically sh compatible.
+
+
+Of all the various options, the most significant is the "--nway=n"
+option.
+This option determines the "fan-out" behavior of rgang.
+
+The default, when the options is not specified, is 200. In many flavors of OSes
+there is a limitation on the number of open files (which is usually not reached
+with --nway=200)
+
+A value of 3 for nway with a list of 10 nodes, attempts to
+fan-out the processing in a manor illustrated by the following diagram:
+
+              /---  n0007  +---  n0009
+              |            \---  n0008
+   startNode  +---  n0004  +---  n0006
+              |            \---  n0005
+              |            /---  n0003
+              \---  n0000  +---  n0002
+                           \---  n0001
+
+Contrast the above structure with the structure below, which results
+when the nway option is not specified (because the default is greater
+than 10) or --nway=0.
+
+              /     n0009
+              }     n0008
+              }     n0007
+              }     n0006
+              }     n0005
+   startNode  }     n0004
+              }     n0003
+              }     n0002
+              }     n0001
+              \     n0000
+
+
+In order for the first structure (tree structure) to work, the
+rgang.py script must be executable from each node that is not at the
+end of a branch and the "remote shell" mechanism must be available
+from the various levels to the next level.
+For example, you should verify that the following works:
+      rsh n0001 "which rgang;rgang --version"
+  and
+      rsh n0001 "rsh n0002 'echo hi'"
+
+The structure of the copy mode, however, is such that rgang.py can be
+used to copy itself to the list of nodes. It copys the file to the
+downstream node first, then, if require, rshells to the node
+and executes the rgang.py script to continue the propagation.
+
+In other words, rgang.py can be used to install itself.
+
+A couple of examples:
+    The system used in the following example is our "qcd" cluster
+    which consists of a "home" node and 80 "worker" nodes.
+    The rgang.py script is symlinked to rgang and is installed
+    (executable) from all 81 nodes.
+    The output in the following examples will is edited to save space.
+
+Example 1:
+
+$ time rgang -nn "{,}qcd0{1-8}{01-10}" echo hiqcd0101= hi
+qcd0101= hi
+qcd0102= hi
+qcd0103= hi
+qcd0104= hi
+qcd0105= hi
+qcd0106= hi
+qcd0107= hi
+qcd0108= hi
+qcd0109= hi
+qcd0110= hi
+qcd0201= hi
+[edit]
+qcd0704= hi
+qcd0705= hi
+qcd0706= qcd0706: No route to host
+qcd0707= hi
+qcd0708= hi
+[edit]
+qcd0703= hi
+qcd0704= hi
+qcd0705= hi
+qcd0706= qcd0706: No route to host
+qcd0707= hi
+qcd0708= hi
+qcd0709= hi
+[edit]
+Command exited with non-zero status 1
+1.45user 2.18system 0:03.84elapsed 94%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (20209major+37650minor)pagefaults 0swaps
+
+In example 1, the -nn option specifies a more compact output format.
+The nodes specification "{,}qcd0{1-8}{01-10}" results in specifying
+160 nodes. (The node names result from the physical configuration of
+8 shelves with 10 nodes per shelf.) The "qcd0{1-8}{01-10}" portion results
+in 80 nodes and the "{,}" portion is a (tricky) way to simply duplicate the
+attach portion. (If more commas are inserted, the list would be duplicated
+more times; the "--list" option can be used to see/experiment with different
+list specifications.) At the time of the example, node qcd0706, was powered
+down. The output, exit status, and bulk of the 3.84 seconds reflect this
+"problem".
+
+
+Example 2:
+
+$ time rgang -nn --nway 40 --skip qcd0706 "{,,}qcd0{1-8}{01-10}" echo hi
+qcd0101= hi
+qcd0102= hi
+qcd0103= hi
+qcd0104= hi
+qcd0105= hi
+qcd0106= hi
+[edit]
+qcd0807= hi
+qcd0808= hi
+qcd0809= hi
+qcd0810= hi
+1.44user 0.63system 0:02.71elapsed 76%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (5292major+8393minor)pagefaults 0swaps
+
+
+In example 2, the unix system limitations are avioded by using the
+nway option and the skip option is demonstrated. The resulting status
+is now success.
+
+Example 3:
+
+$ time rgang -c -nn --nway=5 --skip qcd0706 "qcd0{1-8}{01-10}" \
+/boot/lsdel.out~ /tmp
+qcd0101= qcd0102= qcd0103= qcd0104= [edit] qcd0809= qcd0810= 
+0.44user 0.31system 0:04.31elapsed 17%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1601major+2320minor)pagefaults 0swaps
+
+In example 3, a file of size 1364734 bytes is copied from the home
+node, through a tree structure to 79 nodes (connected to a big
+switch, all with 100Mbit NICs) in 4.31 seconds.
+1364734/(1024*1024) * 79 / 4.31 = 23.86 MB/sec
+
+Example 4:
+
+$ rgang.py --nway=2 "hppc{,,,}" 'echo hi from MACH_ID $RGANG_MACH_ID'
+hppc= sh: rgang.py:  not found
+hppc= hi from MACH_ID 1
+hppc= sh: rgang.py:  not found
+hppc= hi from MACH_ID 3
+$ cat >.rgangrc <<'EOF'
+. /usr/local/etc/setups.sh
+setup python v2_1a
+PATH=.:$PATH   # adjust the path to get python
+EOF
+$ rgang.py --nway=2 -c "hppc{,,,}" .rgangrc rgang.py .
+hppc= hppc= UX:cp: ERROR: ./.rgangrc and ./.rgangrc are identical
+UX:cp: ERROR: ./rgang.py and ./rgang.py are identical
+hppc= hppc= UX:cp: ERROR: ./.rgangrc and ./.rgangrc are identical
+UX:cp: ERROR: ./rgang.py and ./rgang.py are identical
+$ rgang.py --nway=2 "hppc{,,,}" 'echo hi from MACH_ID $RGANG_MACH_ID'
+hppc= hi from MACH_ID 0
+hppc= hi from MACH_ID 1
+hppc= hi from MACH_ID 2
+hppc= hi from MACH_ID 3
+
+The 1st part of example 4 show what happens if rgang.py is not on one a node
+used by the --nway processing. The 2nd part highlights the .rgangrc feature;
+it can be used to initialize the remote environment. The 3rd part is just
+a by-product of using the same node. This example also shows that the
+environmental variable RGANG_MACH_ID is set.
+
+
+Example 5:
+
+$ wc -l ./all
+    173 ./all
+$ cat ./all ./all | ./rgang.py -n0 - '>/dev/null'
+cat ./all ./all | ./rgang.py -n0 --nway=0 - '>/dev/null'\
+Traceback (innermost last):
+  File "./rgang.py", line 1431, in ?
+    if __name__ == "__main__": main()
+  File "./rgang.py", line 1412, in main
+    try: total_stat,ret_list = rgang( sys.argv[1:] )
+  File "./rgang.py", line 1131, in rgang
+    sp_info = spawn_cmd( g_internal_info[mach_idx], mach_idx, opts, args, branch_nodes, 0 )                     #2 for inner_branch_idx in ...
+  File "./rgang.py", line 531, in spawn_cmd
+    sp_info = spawn( g_opt['rsh'], sp_args, g_opt['combine'] )
+  File "./rgang.py", line 368, in spawn
+    else:          pipe0 = os.pipe(); pipe1 = os.pipe(); pipe2 = os.pipe()
+OSError: [Errno 24] Too many open files
+$ 
+
+The 1st command in example 5 (wc) is meant to show that there are 172 nodes
+specified in the local "all" "farmlet" file. The 2nd command (the 1st
+rgang) shows how the default "nway" option can handle 346 nodes and the
+last command shows that when --nway=0 is specified and the rgang script
+attempts to process 346 nodes in parallel, the process gets a "Too many
+open files" error.
+
+
+Example 6:
+
+$ ./rgang.py nqcd08{01-06} 'echo RGANG_INITIATOR=$RGANG_INITIATOR RGANG_PARENT=$RGANG_PARENT RGANG_PARENT_ID=$RGANG_PARENT_ID'
+nqcd0801= RGANG_INITIATOR=dellquad.fnal.gov RGANG_PARENT=dellquad.fnal.gov RGANG_PARENT_ID=
+nqcd0802= RGANG_INITIATOR=dellquad.fnal.gov RGANG_PARENT=dellquad.fnal.gov RGANG_PARENT_ID=
+nqcd0803= RGANG_INITIATOR=dellquad.fnal.gov RGANG_PARENT=dellquad.fnal.gov RGANG_PARENT_ID=
+nqcd0804= RGANG_INITIATOR=dellquad.fnal.gov RGANG_PARENT=dellquad.fnal.gov RGANG_PARENT_ID=
+nqcd0805= RGANG_INITIATOR=dellquad.fnal.gov RGANG_PARENT=dellquad.fnal.gov RGANG_PARENT_ID=
+nqcd0806= RGANG_INITIATOR=dellquad.fnal.gov RGANG_PARENT=dellquad.fnal.gov RGANG_PARENT_ID=
+$ ./rgang.py nqcd08{01-06} 'echo $RGANG_MACH_ID $RGANG_PARENT_ID'
+nqcd0801= 0
+nqcd0802= 1
+nqcd0803= 2
+nqcd0804= 3
+nqcd0805= 4
+nqcd0806= 5
+$ ./rgang.py --nway=1 nqcd08{01-06} 'echo $RGANG_MACH_ID $RGANG_PARENT_ID'
+nqcd0801= 0
+nqcd0802= 1 0
+nqcd0803= 2 1
+nqcd0804= 3 2
+nqcd0805= 4 3
+nqcd0806= 5 4
+$ ./rgang.py --nway=2 nqcd08{01-06} 'echo $RGANG_MACH_ID $RGANG_PARENT_ID'
+nqcd0801= 0
+nqcd0802= 1 0
+nqcd0803= 2 0
+nqcd0804= 3
+nqcd0805= 4 3
+nqcd0806= 5 3
+$ 
+
+Example 6 shows the various RGANG environmental variables.  The last couple
+of commands show how they can be used to get an idea of tree structure.
+
+
+Example 7:
+
+$ odir=/tmp
+$ ofile=t.t
+$ ifile=/etc/passwd
+$ nodes="qcd0{1-8}{01-10}"
+$ rgang --nway=2 $nodes 'echo hi'    # check
+$ cat $ifile | rgang --input-to-all-branches --nway=2 -n0 $nodes "cat >$odir/$ofile"
+
+Example 7 shows how to distribute a large file really fast. For large files
+this is much much faster than copy mode; copy mode is still useful for
+distributing rgang as the rgang needs to be completely copied to each level of
+the tree before the next level can start (becuase the next level may require
+rgang).
+Note/Recall: in order for the --nway option to work, the rgang
+             script/executable must be accessible to the remote shell.
+Note also: if ssh is used (via --rsh option), it's data encryption will impact
+           transher rate.
+
+Example 8:
+
+$ src_dir=~/doc
+$ dst_dir='/tmp/ron$RGANG_MACH_ID'   # single quote so sh var. is evaluated on remote
+$ nodes="fnapcf{,,,,}"
+$ rgang --nway=2 $nodes 'echo hi'    # check
+$ (cd $src_dir && tar cBf - .) \
+ | rgang --input-to-all-branches --nway=2 -n0 $nodes \
+  "mkdir -p $dst_dir && cd $dst_dir && tar xBf -"
+
+Example 8 copies/distributes a directory of files. The version of tar on my
+system handles files greater than 2 GB; I do not know the size limitation for
+individual files.
+Note/Recall: in order for the --nway option to work, the rgang
+             script/executable must be accessible to the remote shell.

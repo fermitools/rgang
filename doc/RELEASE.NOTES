@@ -1,0 +1,677 @@
+
+CHANGE(S) FOR VERSION v3_8_0
+
+    The number of files changed: 12
+
+    prvTagRev curTagRev     File
+    --------- --------- --------------------------------------------
+         1.33:1.35      Makefile
+         1.38:1.39      README
+         1.11:1.12      rgang_examples.txt
+        1.175:1.179     bin/rgang.py
+             :1.2       doc/rgang.8
+             :1.1       rpm/Makefile
+             :1.1       rpm/Makefile.local
+             :1.3       rpm/maketar
+             :1.1       rpm/rgang-3.4-2.src.rpm
+             :1.2       rpm/rgang.spec
+             :1.1       test/README.latest_test
+         1.55:1.59      test/test.sh
+
+
+    File: Makefile:
+    preparing for v3_8_0
+    more complete instructions (and include .tgz)
+    ----------------------------------------------------
+    File: README:
+    preparing for v3_8_0
+    ----------------------------------------------------
+    File: rgang_examples.txt:
+    create rgangrc via "here document"
+    ----------------------------------------------------
+    File: bin/rgang.py:
+    version 3.8.0
+    rgang --list "/tmp/iperf_nodes.14124{,},fnapcf{,}" 2>&1 | head -44
+    err-file processing and test - seems like status at particular point can sometimes be None
+    adjust -h and -hv output
+    ----------------------------------------------------
+    File: test/test.sh:
+    worse not worst
+    change dflt node for tststnd* to be flxi02; tweak info output; add --rgang option to re-invocation
+    expect_nodes is calculated after opt_rgang
+    err-file processing and test - seems like status at particular point can sometimes be None
+
+==========================================================================
+
+
+CHANGE(S) FOR VERSION v3_7
+
+    Note: This version has the "ditto" option (see help message).
+          The frozen version (bin/rang) is included but it doesnot seem to
+          do the tree-structure (num_nodes>nway). The python file
+          (bin/rgang.py) works fine.
+
+    The number of files changed: 5
+
+    prvTagRev curTagRev     File
+    --------- --------- --------------------------------------------
+         1.30:1.33      Makefile
+         1.37:1.38      README
+             :1.34      bin/rgang
+        1.165:1.175     bin/rgang.py
+         1.51:1.55      test/test.sh
+
+
+    File: Makefile:
+    PYDIST_V=2.4.6 -- with /p/python/{Python-2.4.6,v2_4_6} on SLF5.i386
+    python 2.4.3 is on slf5.i386
+    make tar.tgz files in /p/rgang
+    ----------------------------------------------------
+    File: README:
+    going to v3_7
+    ----------------------------------------------------
+    File: bin/rgang.py:
+    going to v3_7
+    rgang was calculating do-local but not using it :(
+    add mach_idx to spawn_cmd TRACE
+    remove debug print
+    adjust DFLT_PATH and --path comment
+    no partial output (except initiator mach_idx0)with --ditto
+    add RGANG_NODES env.var.
+    ditto w/o timeout
+    ditto with timeout; but I don't like the timeout
+    crude "ditto" functionality
+    ----------------------------------------------------
+    File: test/test.sh:
+    smarter test_input_to_branches -- only check local node
+    adjust RGANG= and comment, use single quotes in "executing..." to allow cut/paste
+    deal with incompatible ssh configs
+    tweak tststnd2 setup -- but needs more
+
+==========================================================================
+
+
+CHANGE(S) FOR VERSION v3_6
+
+    Note: frozen version not included --
+          just cp bin/rgang.py to <your_favorite_bin>/rgang
+
+    The number of files changed: 5
+
+    prvTagRev curTagRev     File
+    --------- --------- --------------------------------------------
+         1.28:1.30      Makefile
+         1.36:1.37      README
+         1.10:1.11      rgang_examples.txt
+        1.160:1.165     bin/rgang.py
+         1.49:1.51      test/test.sh
+
+
+    File: Makefile:
+    can't put comment at end of SYS_PY_V line
+    wrestling with frozen target
+    ----------------------------------------------------
+    File: README:
+    trying to make version 3.6
+    ----------------------------------------------------
+    File: rgang_examples.txt:
+    typo
+    ----------------------------------------------------
+    File: bin/rgang.py:
+    update version to 3.6
+    move farmlet processing into expand to allow mix of farmlets and nodes
+    Doc node spec.
+    Doc --serial=1,SIGINT. linefeed at end of SIGQUIT status line.
+    number _of_ nodes
+    ----------------------------------------------------
+    File: test/test.sh:
+    add a way to test frozen version
+    note system memory requirement for big ssh test
+
+==========================================================================
+
+
+CHANGE(S) FOR VERSION v3_5
+
+    The number of files changed: 5
+
+    prvTagRev curTagRev     File
+    --------- --------- --------------------------------------------
+         1.27:1.28      Makefile
+         1.35:1.36      README
+         1.32:1.33      bin/rgang
+        1.158:1.160     bin/rgang.py
+         1.48:1.49      test/test.sh
+
+    File: Makefile:
+    for v3.5
+    ----------------------------------------------------
+    File: README:
+    for v3.5
+    ----------------------------------------------------
+    File: bin/rgang:
+    for v3.5
+    ----------------------------------------------------
+    File: bin/rgang.py:
+    for v3.5
+    fix ctrl-C "Bad file descriptor" bug
+    ----------------------------------------------------
+    File: test/test.sh:
+    add more comments, robustness
+
+==========================================================================
+
+
+CHANGE(S) FOR VERSION v3_4       AD2012.09.27
+
+The number of files changed: 4
+
+prvTagRev curTagRev     File
+--------- --------- --------------------------------------------
+     1.34:1.35      README
+     1.31:1.32      bin/rgang
+    1.156:1.158     bin/rgang.py
+     1.47:1.48      test/test.sh
+
+
+    File: README:
+    going to v3_4
+    ----------------------------------------------------
+    File: bin/rgang:
+    going to v3_4
+    ----------------------------------------------------
+    File: bin/rgang.py:
+    going to v3_4
+    defaults back to rsh/rcp
+    tweak help msg
+    just use fo.write instead of os.write(fd,...) in TRACE
+    no TRACE in NodeInfo to avoid TRACEing call loop
+    change pickle option to have default arg =1
+    adjust TRACEs
+    adjust select_interrupt (interruptible select) exception code
+    to handle/distinguish sigint and sigquit.
+    adjust wait_nohang routine to return rpid,rstatus instead of just rpid
+    don't "kill" when stdin closed; this would cause some tests to fail.
+    some more debug TRACEs
+    close stdin upon ctrl-C
+    ----------------------------------------------------
+    File: test/test.sh:
+    slight enhance/fix-up
+    ----------------------------------------------------
+==========================================================================
+
+
+CHANGE(S) FOR VERSION v3_3
+
+The number of files changed: 5
+
+prvTagRev curTagRev     File
+--------- --------- --------------------------------------------
+     1.33:1.34      README
+    1.154:1.156     bin/rgang.py
+      1.1:1.3       doc/cvs_list_changed_files.sh
+      1.2:1.3       doc/cvs_rel_notes.sh
+     1.46:1.47      test/test.sh
+
+
+    File: README:
+    just change defaults to ssh and scp
+    ----------------------------------------------------
+    File: bin/rgang.py:
+    just change defaults to ssh and scp
+    try/except gethostbyaddr -- for when testing on vm
+    ----------------------------------------------------
+    File: doc/cvs_list_changed_files.sh:
+    try to make script useful in other environments
+    try to make script useful in other environments
+    ----------------------------------------------------
+    File: doc/cvs_rel_notes.sh:
+    try to make script useful in other environments
+    ----------------------------------------------------
+    File: test/test.sh:
+    add comment (useful when testing on new node)
+    ----------------------------------------------------
+==========================================================================
+
+
+CHANGE(S) FOR VERSION v3_2
+
+    Highlight:
+	   Help (-h,-?,--help) without -v list basic usage and options.
+	Help with -v give more info including info on sigquit (usually ctl-\)
+        output. Could be useful if rgang _appears_ to be hanging.
+
+    Cvs Log Info:
+    The number of files changed: 7
+    
+    prvTagRev curTagRev     File
+    --------- --------- --------------------------------------------
+         1.24:1.27      Makefile
+         1.32:1.33      README
+         1.30:1.31      bin/rgang
+        1.142:1.154     bin/rgang.py
+          1.1:1.2       doc/cvs_rel_notes.sh
+         1.41:1.46      test/test.sh
+          1.2:1.3       ups/rgang.table
+    
+    
+    File: Makefile:
+    flavor is changing
+    note format for <next_rev>
+    easier switch between versions for freezing
+    ----------------------------------------------------
+    File: README:
+    next version
+    ----------------------------------------------------
+    File: bin/rgang:
+    new Python-2.2.3 frozen version
+    ----------------------------------------------------
+    File: bin/rgang.py:
+    python2/3 compatible select exception, adjust help and verbose help (document SIGQUIT), adjust sigquit status line
+    setup for debugging python3
+    fix bug introduced
+    exception, string, long - movement toward python3
+    separate VERSION and rcs keywords
+    better spec local/farmletdir/expand list distinguish, print -> sys.stdout.write
+    better spec local/farmletdir/expand list distinguish, print -> sys.stdout.write
+    adjust help -- -? -v functionality
+    allow for --pty --input-to-all
+    add except message for socket.gaierror
+    fix DFLT_PATH for frozen case where sys.argv[0] can be just "rgang"
+    message to stderr for invalid --rsh or --rcp option
+    ----------------------------------------------------
+    File: doc/cvs_rel_notes.sh:
+    just note the format of the nextVersion arg
+    ----------------------------------------------------
+    File: test/test.sh:
+    test hosts are changing, no --debug, use $RGANG to find expected_first_parent
+    completed testing on laptop
+    modernize
+    add -x support to cmd, changes to test_big_ssh_output
+    message to stderr for invalid --rsh or --rcp option
+    ----------------------------------------------------
+    File: ups/rgang.table
+    flavor of ANY -- real flavor in .version file
+    ----------------------------------------------------
+==========================================================================
+
+
+CHANGE(S) FOR VERSION v3_1
+
+	Highlights:
+	   Adjustments to make python 2.2.3 friendly. The previous (v3_0)
+	frozen bin/rgang is severely handicapped because of some
+	non-2.2.3-friendly code.  Fixed long time bug is --serial
+	processing when groups are not the same size.
+
+	Cvs Log Info:
+	The number of files changed: 6
+	
+	prvTagRev curTagRev     File
+	--------- --------- --------------------------------------------
+	     1.23:1.24      Makefile
+	     1.31:1.32      README
+	      1.9:1.10      rgang_examples.txt
+	     1.29:1.30      bin/rgang
+	    1.137:1.142     bin/rgang.py
+	     1.33:1.41      test/test.sh
+	
+	
+	File: Makefile:
+	rebuild frozen, adjust Makefile tar instructions
+	----------------------------------------------------
+	File: README:
+	start v3_1
+	----------------------------------------------------
+	File: rgang_examples.txt:
+	fix "many"
+	----------------------------------------------------
+	File: bin/rgang:
+	rebuild frozen, adjust Makefile tar instructions
+	----------------------------------------------------
+	File: bin/rgang.py:
+	start v3_1
+	all select_interrupt
+	initial addition of select_interrupt, python 2.2.3 friendly dict_pop, ^C output on stderr
+	reduce ^C output
+	fix --serial bug and optional --serial arg
+	----------------------------------------------------
+	File: test/test.sh:
+	tweak comment
+	status bug
+	use nodespec instead of hardcoded fnapcf spec
+	note limitations with binary stdou
+	better first node included/not include for PARENT
+	try to adjust to be able to test frozen version
+	test_big_output: count bytes
+	deal with indented sleep in .rgangrc
+	----------------------------------------------------
+==========================================================================
+
+
+CHANGE(S) FOR VERSION v3_0   2008.05.23
+
+	Highlight:
+	  This is the first version that allows for C-\ (Control-backslash)
+	to display (on stderr) internal status information which is useful
+	during an rgang to a large number of nodes that appears to be
+	stuck. To allow for this, the branch rgangs must send intermediate
+	pickled status.
+
+	Cvs Log Info:
+	The number of files changed: 4
+	
+	prvTagRev curTagRev     File
+	--------- --------- --------------------------------------------
+	     1.22:1.23      Makefile
+	     1.30:1.31      README
+	    1.119:1.137     bin/rgang.py
+	     1.19:1.33      test/test.sh
+	
+	
+	File: Makefile:
+	freezing with python v2_2_3
+	----------------------------------------------------
+	File: README:
+	v3_0
+	----------------------------------------------------
+	File: bin/rgang.py:
+	v3_0
+	verbose adds "# mach_idx=%d" to --list
+	move class NodeInfo, do not init g_thisnode until after --version,
+	  adjust TRACE to deal with it, fix main exception for SystemExit 
+	make sure dflt_path is in path, move initiator_node_status to
+	  ACTIVE OUTPUT 
+	exception/control-C adjustments
+	clear buffered std* after write, init g_ret_info and
+	  g_internal_info better for --serial --err-file ^C 
+	check g_timeout_l for general "pool" timeout, add
+	  initiator_node_status (err-file) to ^C, add except to rgang node
+	  list write 
+	pickle_to_stdout when timeout_wait == None
+	make ret_info = g_ret_info
+	make more globals and add to ^C processing, add set_connected_g,
+	  tweak --serial note 
+	--serial help, better -V (version) info
+	start second_ctrl_c, add comments(doc), minor formating
+	get stderr
+	make pickle_to_stdout routine, adjust TRACEs, do_stage_before
+	  do_output, enable intermediate pickle, add comments/doc/help, use
+	  RGANG_MACH_ID in TRACE 
+	add TRACE --- copy with --nway seems to be messed up :(
+	moved stage rgang processing up
+	preparing for periodic pypickle updates
+	add ^\ (SIGQUIT) processing - TRACE exceptions
+	----------------------------------------------------
+	File: test/test.sh:
+	adjust ctrl_c to test more, add pstree_python, add test_version,
+	  add check for hostname in /etc/hosts, tweak echos 
+	add test_input_to_branches
+	add "most" and adjust .rgangrc in big_ssh (because a sleep make all
+	  the other tests take too long 
+	just note node_num
+	add more --nway runs to big_ssh, add vecho and qecho
+	fix stderr, check status in base, add big{_ssh,}_output
+	add big_ssh, add to/adjust ctrl_c
+	add initial control-C test
+	short test names
+	redo test framework
+	back to /usr/bin/rsh
+	configured laptop for sshd listening on 127.0.0.1:port
+	add RGANG_MACH_ID and print of TIMEWAIT
+	adjust/modernize, include --err-file
+	----------------------------------------------------
+==========================================================================
+
+
+CHANGE(S) FOR VERSION v2_10 04/18/2008
+
+	The number of files changed: 4
+
+	prvTagRev curTagRev     File
+	--------- --------- --------------------------------------------
+	     1.20:1.22      Makefile
+	      1.8:1.9       rgang_examples.txt
+	    1.115:1.117     bin/rgang.py
+	     1.24:1.25      doc/RELEASE.NOTES
+
+
+	File: Makefile:
+	RELEASE.NOTES currently needs manual editing
+	I like having the rev in the log for the RELEASE.NOTES
+	----------------------------------------------------
+	File: rgang_examples.txt:
+	minor spelling/grammar
+	----------------------------------------------------
+	File: bin/rgang.py:
+	move g_opt['C'] up (before: if g_opt['s']...) so it will do what it should
+	more consistant env opts and support RGANG_OPTS
+	----------------------------------------------------
+	File: doc/RELEASE.NOTES:
+	add date to RELEASE.NOTES
+	----------------------------------------------------
+
+
+VERSION v2_9   2006/10/09
+	       The number of files changed: 5
+	       prvTagRev curTagRev     File
+	       --------- --------- --------------------------------------------
+	            1.16:1.20      Makefile
+	            1.28:1.29      README
+		    1.25:1.26      bin/rgang
+		   1.114:1.115     bin/rgang.py
+		    1.18:1.19      test/test.sh
+	       ----------------------------------------------------
+	       File: Makefile:
+	       better "make tar" instructions
+	       trying to make frozen
+	       show ups declare before upd...
+	       better upd addproduct reminder
+	       ----------------------------------------------------
+	       File: README:
+	       new rev
+	       ----------------------------------------------------
+	       File: bin/rgang:
+	       this one matches rgang.py!
+	       ----------------------------------------------------
+	       File: bin/rgang.py:
+	       add to rsh comment and new version
+	       ----------------------------------------------------
+	       File: test/test.sh:
+	       hppc has gone away
+	       ----------------------------------------------------
+
+VERSION v2_8   2005/12/30
+	       The number of files changed: 4
+	       prvTagRev curTagRev     File
+	       --------- --------- --------------------------------------------
+	            1.14:1.16      Makefile
+		    1.27:1.28      README
+		   1.112:1.114     bin/rgang.py
+                        :1.1       test/rgang.strace.txt
+	      ----------------------------------------------------
+	      File: Makefile:
+	      auto version and date for README
+	      auto change version in README and bin/rgang.py; but README needs date?
+	      ----------------------------------------------------
+	      File: README:
+	      next rev
+	      ----------------------------------------------------
+	      File: bin/rgang.py:
+	      next rev
+	      eliminate: FutureWarning: x<<y losing bits or changing sign will return a long in Python 2.4 and up
+	      ----------------------------------------------------
+
+Version 2.7   2005/05/04
+	      The number of files changed: 13
+              prvTagRev curTagRev     File
+	      --------- --------- --------------------------------
+                   1.12:1.14      Makefile
+                   1.25:1.26      README
+                    1.6:1.8       rgang_examples.txt
+                       :1.1       bin/.cvsignore
+                   1.23:1.24      bin/rgang
+                  1.108:1.111     bin/rgang.py
+                       :1.1       doc/cvs_list_changed_files.sh
+		       :1.1       scripts/README
+		       :1.1       scripts/killRestart.sh
+		       :1.1       scripts/pingNodes.sh
+		       :1.1       scripts/rebootNodes.sh
+		       :1.1       test/test.sh-example_output.txt
+		       :1.3       test/tst_pipe.py
+              ----------------------------------------------------
+	      File: Makefile:
+	      for consistancy, try setup python v2_1
+	      about to need to upgrade to newer version of python for freeze
+	      ----------------------------------------------------
+	      File: README:
+	      clarify and better script
+	      ----------------------------------------------------
+	      File: rgang_examples.txt:
+	      make note about ssh and encryption
+	      more specific test/check for nway config
+	      ----------------------------------------------------
+	      File: bin/rgang:
+	      change sh to /bin/sh and add comment about exec
+	      ----------------------------------------------------
+	      File: bin/rgang.py:
+	      fix bug and do not use +=
+	      change sh to /bin/sh and add comment about exec
+	      say what default is
+	      ----------------------------------------------------
+Version 2.6   2005/01/22
+	      fixed node list octal expand bug.
+	      Linux only: use ifconfig for find all network interfaces for
+	      --do-local processing.
+	      ----------------------------------------------------
+              The number of files changed: 8
+              prvTagRev curTagRev     File
+              --------- --------- --------------------------------
+                    1.9:1.11      Makefile
+                    1.4:1.6       rgang_examples.txt
+                  1.103:1.107     bin/rgang.py
+                       :1.1       bin/test_NodeInfo.py
+                       :1.1       bin/test_expand.py
+                       :1.1       doc/cvs_rel_notes.sh
+                    1.8:1.9       test/rgang.test.sh
+                   1.15:1.18      test/test.sh
+              ----------------------------------------------------
+              File: Makefile:
+              note on doc/cvs_rel_notes.sh
+              better notes
+              ----------------------------------------------------
+              File: rgang_examples.txt:
+              minor tweak and add example 8
+              a few more sentences about "node spec"; suggestions from Steve Tether
+              ----------------------------------------------------
+              File: bin/rgang.py:
+              fix all NodeInfo.hostname_l[0], stderr of ifconfig, remove print, move global g_opt
+              fix expand and NodeInfo to know about all interfaces (at least on Linux)
+              more effecient to return mach_idx, insert into stderr (avoids confusion), adjust default timeouts -> basically force users to set them
+              maybe slightly more efficient
+              ----------------------------------------------------
+              File: test/rgang.test.sh:
+              say what script tests
+              ----------------------------------------------------
+              File: test/test.sh:
+              just set exit_status so files get cleaned up
+              add python to path, use openssh v3_7_1p1
+              better usage, add --nodes option
+              ----------------------------------------------------
+Version 2.5   2003/06/23
+	      fix --serial bug, better stdin pipe performance
+Version 2.4   2003/06/20
+	      close files in sub processes
+Version 2.3   2003/06/19
+	      correctly support (no hangs):
+              cat $ifile | \
+              rgang --input-to-all-branches --nway=$x $nodes "cat >$odir/$ofile"
+Version 2.2   2003/06/17
+	      1) add RGANG_INITIATOR, RGANG_PARENT,RGANG_PARENT_ID env.vars.
+	      See rgang_examples.txt
+	      2) fix lingering timeout bug
+	      3) add a touch of ^C cleanup of forked processes
+Version 2.1   2003/06/12
+	      1) add support for $HOME/.rgangrc
+              2) force "sh" environment. i.e. the give command is executed as
+	      such: rsh node 'sh -c "command"'  (with an attempt to handle
+	      quoting correctly).
+	      This breaks the previous functionality where rgang would behave
+	      the same as rsh when going to a single node regardless of which
+	      shell was configured for the user on the remote side. However,
+	      this new behavior allows the user to specify sh specific syntax
+	      (i.e. stderr redirection) and not have to worry about which
+	      shell is configured for the user on the remote end.
+	      3) change default header behavior again:
+	      single node: -n0
+	      multiple:    -n1
+Version 2.0   2003/06/11
+	      1) add options --rshto and --rcpto to control timeouts for rsh
+	      "connection" and the rcp portion of the copy-mode.
+	      2) add --err-file option to specify a file into which a list
+	      of nodes that had associated non-zero error status (including
+	      timeout) Note, however, there is no distinction between a
+	      connection problem and a basic non-zero error status from
+	      the command as executed on a node. The format of the err-file
+	      written is compatible for use as a node-spec file (for retry)
+	      or as the argument to --skip.
+	      3) changed default header to -n0 so "rsh node cmd" output
+	      will be the same as "rgang node cmd" output.
+	      4) set RGANG_MACH_ID environment variable; 
+	      "rgang node{1-3} 'echo -n $RGANG_MACH_ID'" will product output
+	      "012"
+Version 1.12  2003/06/02
+	      -n or -n0: no header
+              -n1 or -nn: node=
+              -n2: - - - <node> - - -
+              -n3 (default): - - - <node> - - - and cmd (on following line)
+Version 1.11  2003/03/20
+	      allow --skip with --list, expand list expand capabilities:
+              you can now specify hex numbers and single alpha characters.
+              single alpha char examples: node{a-z}   or node{a-j,m-z}
+              hex examples:               node{0-0xf} or node{04-0x44,4f-0x55}
+              Note:  node{a-f} or node{a-0xf} both will work
+
+Version 1.10  2003/03/03
+	      adjust how --farmlets option effects nodespec evaluation
+              order, included rgang cvs rev. in README, allow backgrounding
+              "&" and better remote shell independence. Note, to allow "&"
+              another shell is forked on the remote and thus there will be
+              a slight performance hit.
+
+Version 1.9   2003/02/09
+	      for node specification (including farmlet files), ignore
+	      whitespace at begin/end and support ("#") comment lines.
+
+Version 1.8   2002/08/07
+	      fix bug in --list expand with duplicate "tokens"
+              preserve --rsh="rsh -F" (quoted) options with --nway
+	      remote shell status does not have to be last thing on stdout
+
+Version 1.7   2002/07/10
+	      remote status is now (hopefully) shell independent
+	      and add PYTHONPATH to ups rgang.table
+
+Version 1.6.1 - 2002/06/05
+	      - change just rgang.py (not rgang): --pyret works with --list when
+                importing rgang.py
+
+Version 1.6 - 2002/05/29
+	    - fix -s bug when dns is checked first in nsswitch.conf
+
+Version 1.5.1 - 2002/05/28
+	      - frozen version made with libreadline v4
+
+Version 1.5 - 2002/05/22
+	    - --list opt behavior: use to expand a node spec
+              handle "-" (stdin node list): bug fix
+
+Version 1.4 - 2001/12/20
+	    - Added -pty option for ssh password processing
+
+Version 1.3 - 2001/12/12
+	    - Make default to NOT execute command for 1st node "locally" and
+              added support for --rsh='cmd -options'
+
+Version 1.2 - 2001/11/30
+	    - Added support for some kerberos rsh/rcp options

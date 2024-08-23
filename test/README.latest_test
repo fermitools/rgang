@@ -1,0 +1,91 @@
+--2021-03-21_06:55:16_CDT--
+/home/ron/work2/rgangPrj/rgang/test
+ron@ronlap77 :^) time ./test.sh --nodes "ronlap77{,,,}{,,}" --rgang ../bin/rgang.py most
+nodespec=ronlap77{,,,}{,,} specifies 12 nodes
+1323263 pts/0    S+     0:00 /bin/sh ./test.sh --nodes ronlap77{,,,}{,,} --rgang ../bin/rgang.py base version stdout stderr quote mach_
+
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-c' 'ronlap77{,,,}{,,}' '../bin/rgang.py' '/tmp' >|stdout 2>|stderr
+
+real	0m1.259s
+user	0m0.247s
+sys	0m0.162s
+
+if we get here then we can start testing some things...
+
+[snip ...]
+
+test huge output --
+a lot of output (catting the big rgang python source file :)
+with a lot of nodes -- there actually may be some errors so
+I really can not count bytes
+Note (2010.05.06): to avoid:
+  ssh_exchange_identification: Connection closed by remote host
+change /etc/sshd_config-localhost OR /etc/sshd_config-127.0.0.1
+MaxStartups from default 10 to 100
+Note: system (if all localhost nodes used) should have about 3 GB RAM.
+WARNING - localhost sshd not running
+
+nodes_num=96
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '-n0' '--nway=20' 'ronlap77{,,,}{,,}{,,,,,,,}' 'cat /tmp/rgang.py' >|stdout 2>|stderr
+
+real	0m8.205s
+user	0m0.687s
+sys	0m0.582s
+-rw-r--r--. 1 ron g023 12124800 Mar 21 07:01 stdout
+big_ssh_output OK
+All is well
+
+real	6m2.111s
+user	0m14.408s
+sys	0m14.080s
+--2021-03-21_07:01:27_CDT--
+
+
+
+  # emacs: forward-page => C-x ]    backward-page => C-x [
+=============================================================================================================
+--2021-03-21_06:54:28_CDT--
+/home/ron/work2/rgangPrj/rgang/test
+ron@work :^) time ./test.sh --rgang ../bin/rgang.py most
+nodespec=flxi03{,,}{,,},work.fnal.gov{,} specifies 11 nodes
+26379 pts/3    S+     0:00 /bin/sh ./test.sh --nodes flxi03{,,}{,,},work.fnal.gov{,} --rgang ../bin/rgang.py base version stdout stderr quote mach_id err_file other copy
+
+hostname not found in /etc/hosts -- this will
+cause excessive socket use which will result in the
+    rcmd: socket: All ports in use
+error.
+[snip ...]
+
+testing with --serial
+executing:  '../bin/rgang.py' '--rsh=ssh -xK' '--path=/tmp:/usr/bin' '--serial' '--rcp=scp' '-c' 'flxi03{,,}{,,},work.fnal.gov{,}' '../bin/rgang.py' '/tmp/rgang.pyx' >|stdout 2>|stderr
+
+real    0m9.130s
+user    0m1.901s
+sys     0m0.303s
+copy OK
+executing:  '../bin/rgang.py' '--rsh=ssh -xK' '--path=/tmp:/usr/bin' 'flxi03{,,}{,,},work.fnal.gov{,}' 'rm -f /tmp/rgang.pyx' >|stdout 2>|stderr
+
+real    0m3.425s
+user    0m1.867s
+sys     0m0.279s
+All is well
+
+real    3m11.278s
+user    0m34.941s
+sys     0m8.774s
+--2021-03-21_06:57:49_CDT--
+
+
+
+
+  # emacs: forward-page => C-x ]    backward-page => C-x [
+=============================================================================================================
+2016-03-02
+/home/ron/work2/rgangPrj/rgang/test
+tststnd2 :^) ./test.sh --rgang ../bin/rgang.py most
+...
+All is well
+--03/02_08:48:27--
+
+
+

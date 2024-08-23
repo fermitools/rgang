@@ -1,0 +1,107 @@
+
+
+
+
+given a list of nodes and way to divide them into branches
+
+gobal_branches_mgr:  oversees all the branches
+		     sets/initializes first branch "active" (for potential write to screen)
+		     then "activates" next branch when current branch completes
+indvl_branch_mgr:    manages node or nodes in branch according to modes below
+
+COMMAND MODE
+------------
+for each group/branch
+   if nodes_to_process is >=2:
+      01start)spawn rsh "headnode" rgang
+      01start)start_tmo
+      02con_wait)look for connect on stdout
+      03stdrecord)record stdout
+      03stdrecord)record stderr
+      04exitprocess)if tmo, record status and dec nodes_to_process
+      04exitprocess)elif exit status is err, record status and dec nodes
+      04exitprocess)elif exit status is ok:
+         stdout should now have pickled stdout,stderr,status for head node cmd and the other nodes cmds
+	 if unpickle status OK: distrib stderr,out
+	 else:       whole branch is a bust!
+	 nodes_to_process=0 DONE
+      04exitprocess)elif ^C-abort, record status;  DONE
+   elif nodes_to_process==1
+      if "do-local" and is_local
+         05start) spawn cmd
+	 06stdrecord)record stdout (looking for exit_sts)
+	 06stdrecord)record stderr
+	 07exitprocess)if   exit,     record status;  DONE
+	 07exitprocess)elif ^C-abort, record status;  DONE
+      else rsh:
+         08start)spawn rsh
+         08start)start_tmo
+	 09con_wait)look for connect on stdout
+	 10stdrecord)record stdout (looking for exit_sts)
+	 10stdrecord)record stderr
+	 11exitprocess)if tmo, record ERR status; DONE
+	 11exitprocess)elif exit, record status;  DONE
+	 11exitprocess)elif ^C-abort, record status;  DONE
+   else:
+      PROCESSING ERROR
+
+When nway == num_nodes:
+   initiating node may or may not also be one of the specified nodes:
+       initiator: I  specified: A B C D E F
+    or initiator: I  specified: I A B C D E
+When nway < num_nodes (i.e. nway=2):
+       initiator: I  specified: A B C D E F G H
+                     I
+                 A        E
+               B   D    F   H
+	      C        G
+
+    or initiator: A  specified: A B C D
+                 A
+               B   D
+	      C
+
+
+
+COPY MODE
+---------
+
+Note: copy mode makes an assumption about how the list of mach indexes are
+      divided into groups/branches (i.e. indexes are always sequentially incrementing by 1)
+
+for each group/branch
+   if nodes_to_process == 0:
+      PROCESSING ERROR
+   12rcpstart) spawn rcp
+   12rcpstart) start tmo
+   13rcpstdrecord)record stdout (looking for exit_sts)
+   13rcpstdrecord)record stderr
+   14rcpexitprocess)if tmo:
+                 record ERR status
+		 DEC nodes_to_process
+		 if nodes_to_process == 0: DONE
+		 else rcpstart
+   14rcpexitprocess)elif exit, record status;
+                    if OK:
+		       if nodes_to_process >= 2: rshrgangc
+		       else dec nodes_to_process; DONE
+		    else ERROR
+		       DEC nodes_to_process
+		       if nodes_to_process == 0: DONE
+		       else rcpstart
+   15rcpexitprocess)elif ^C-abort, record status;  DONE
+   if nodes_to_process is >=2:    (IF 2, COULD RSH RCP BUT NO TIMEOUT CONTROL!)
+      16rshrgangcstart)spawn rsh "headnode" rgang -c
+      16rshrgangcstart)start_tmo
+      17rshrgangccon_wait)look for connect on stdout
+      18rshrgangcstdrecord)record stdout
+      18rshrgangcstdrecord)record stderr
+      19rshrgangcexitprocess)if tmo, record status and dec nodes_to_process
+      19rshrgangcexitprocess)elif exit status is err, record status and dec nodes
+      19rshrgangcexitprocess)elif exit status is ok:
+         stdout should now have pickled stdout,stderr,status for head node cmd and the other nodes cmds
+	 if unpickle status OK: nodes_to_process = 0
+	 else:       whole branch is a bust!
+	 nodes_to_process=0 DONE
+      19rshrgangexitprocess)elif ^C-abort, record status;  DONE
+

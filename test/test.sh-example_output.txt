@@ -1,0 +1,177 @@
+nodespec=fnapcf.fnal.gov{,,},hppc{,,} specifies       6 nodes
+executing: ../bin/rgang.py --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin --rcp=scp -c fnapcf.fnal.gov{,,},hppc{,,} ../bin/rgang.py /tmp >stdout 2>stderr
+0.25user 0.05system 0:06.10elapsed 4%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1246major+2290minor)pagefaults 0swaps
+
+if we get here then we can start testing some things...
+
+base command: ../bin/rgang.py "--rsh=rsh -F" --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=4 "fnapcf.fnal.gov{,,},hppc{,,}" 'echo hi'
+
+test stdout...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=0 fnapcf.fnal.gov{,,},hppc{,,} echo hi >stdout 2>stderr
+0.34user 0.04system 0:05.48elapsed 6%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2164major+2715minor)pagefaults 0swaps
+    stdout seems OK  (stdoutlc=      6)
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=3 fnapcf.fnal.gov{,,},hppc{,,} echo hi >stdout 2>stderr
+0.24user 0.06system 0:10.80elapsed 2%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1590major+2140minor)pagefaults 0swaps
+    stdout seems OK  (stdoutlc=      6)
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=4 fnapcf.fnal.gov{,,},hppc{,,} echo hi >stdout 2>stderr
+0.33user 0.05system 0:01.48elapsed 25%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1877major+2428minor)pagefaults 0swaps
+    stdout seems OK  (stdoutlc=      6)
+test stderr...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=0 fnapcf.fnal.gov{,,},hppc{,,} sh -c 'echo hi 1>&2' >stdout 2>stderr
+0.32user 0.04system 0:10.87elapsed 3%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2164major+2742minor)pagefaults 0swaps
+    stderr seems OK
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=2 fnapcf.fnal.gov{,,},hppc{,,} sh -c 'echo hi 1>&2' >stdout 2>stderr
+0.25user 0.06system 0:02.25elapsed 13%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1303major+1830minor)pagefaults 0swaps
+    stderr seems OK
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=4 fnapcf.fnal.gov{,,},hppc{,,} sh -c 'echo hi 1>&2' >stdout 2>stderr
+0.29user 0.06system 0:06.49elapsed 5%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1877major+2442minor)pagefaults 0swaps
+    stderr seems OK
+
+test quoting:   rsh node csh -fc 'echo "hi    there"'
+                should produce: <blank>   (what gets to the remote shell is: csh -fc echo "hi    there")
+                Note: some node may or may not produce a (single) new-line with the above line
+       while:   rsh node "csh -fc 'echo \"hi    there\"'"
+                should produce: hi    there
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n0 --nway=1 fnapcf.fnal.gov{,,},hppc{,,} csh -fc echo "hi    there" >stdout 2>stderr
+0.27user 0.02system 0:09.79elapsed 2%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1016major+1508minor)pagefaults 0swaps
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n0 --nway=1 fnapcf.fnal.gov{,,},hppc{,,} csh -fc 'echo "hi    there"' >stdout 2>stderr
+0.25user 0.01system 0:15.13elapsed 1%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1016major+1537minor)pagefaults 0swaps
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n0 --nway=1 fnapcf.fnal.gov{,,},hppc{,,} csh -fc "echo 'hi    there'" >stdout 2>stderr
+0.25user 0.02system 0:14.69elapsed 1%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1016major+1531minor)pagefaults 0swaps
+
+testing $RGANG_MACH_ID $RGANG_PARENT_ID
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n0 --nway=1 fnapcf.fnal.gov{,,},hppc{,,} echo $RGANG_MACH_ID $RGANG_PARENT_ID >stdout 2>stderr
+0.25user 0.06system 0:20.30elapsed 1%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1016major+1537minor)pagefaults 0swaps
+
+testing with --nway=4
+test zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=4 fnapcf.fnal.gov{,,},hppc{,,} echo hi >stdout 2>stderr
+0.30user 0.06system 0:05.49elapsed 6%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1877major+2432minor)pagefaults 0swaps
+    error status seems OK
+test non-zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=4 fnapcf.fnal.gov{,,},hppc{,,} ls /sdlkfjslk2223 >stdout 2>stderr
+0.29user 0.07system 0:05.99elapsed 6%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1877major+2394minor)pagefaults 0swaps
+    error status seems OK
+
+testing with --nway=2
+test zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=2 fnapcf.fnal.gov{,,},hppc{,,} echo hi >stdout 2>stderr
+0.24user 0.06system 0:02.42elapsed 12%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1303major+1834minor)pagefaults 0swaps
+    error status seems OK
+test non-zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=2 fnapcf.fnal.gov{,,},hppc{,,} ls /sdlkfjslk2223 >stdout 2>stderr
+0.29user 0.03system 0:05.57elapsed 5%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1303major+1810minor)pagefaults 0swaps
+    error status seems OK
+
+testing with --nway=1
+test zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=1 fnapcf.fnal.gov{,,},hppc{,,} echo hi >stdout 2>stderr
+0.26user 0.01system 0:05.58elapsed 4%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1016major+1514minor)pagefaults 0swaps
+    error status seems OK
+test non-zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=1 fnapcf.fnal.gov{,,},hppc{,,} ls /sdlkfjslk2223 >stdout 2>stderr
+0.24user 0.04system 0:10.61elapsed 2%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1016major+1495minor)pagefaults 0swaps
+    error status seems OK
+
+testing with --combine
+test zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --combine fnapcf.fnal.gov{,,},hppc{,,} echo hi >stdout 2>stderr
+0.32user 0.08system 0:06.22elapsed 6%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2164major+2707minor)pagefaults 0swaps
+    error status seems OK
+test non-zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --combine fnapcf.fnal.gov{,,},hppc{,,} ls /sdlkfjslk2223 >stdout 2>stderr
+0.29user 0.10system 0:01.25elapsed 31%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2164major+2682minor)pagefaults 0swaps
+    error status seems OK
+
+testing with --pty
+test zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --pty fnapcf.fnal.gov{,,},hppc{,,} echo hi >stdout 2>stderr
+0.36user 0.05system 0:01.13elapsed 36%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (3306major+3208minor)pagefaults 0swaps
+    error status seems OK
+test non-zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --pty fnapcf.fnal.gov{,,},hppc{,,} ls /sdlkfjslk2223 >stdout 2>stderr
+0.30user 0.08system 0:05.50elapsed 6%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (3306major+3187minor)pagefaults 0swaps
+    error status seems OK
+
+testing with --do-local
+test zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --do-local fnapcf.fnal.gov{,,},hppc{,,} echo hi >stdout 2>stderr
+0.28user 0.05system 0:05.95elapsed 5%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2060major+2572minor)pagefaults 0swaps
+    error status seems OK
+test non-zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --do-local fnapcf.fnal.gov{,,},hppc{,,} ls /sdlkfjslk2223 >stdout 2>stderr
+0.30user 0.06system 0:01.30elapsed 27%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2178major+2634minor)pagefaults 0swaps
+    error status seems OK
+
+testing with --serial
+test zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --serial fnapcf.fnal.gov{,,},hppc{,,} echo hi >stdout 2>stderr
+0.30user 0.06system 0:02.48elapsed 14%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2164major+2839minor)pagefaults 0swaps
+    error status seems OK
+test non-zero error status...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --serial fnapcf.fnal.gov{,,},hppc{,,} ls /sdlkfjslk2223 >stdout 2>stderr
+0.28user 0.09system 0:02.28elapsed 16%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2164major+2789minor)pagefaults 0swaps
+    error status seems OK
+test different commands...
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin -n --nway=1 fnapcf.fnal.gov{,,},hppc{,,} sleep 5 >&- 2>&- & >stdout 2>stderr
+0.24user 0.04system 0:09.07elapsed 3%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1016major+1506minor)pagefaults 0swaps
+    command seems OK
+
+now a quick copy
+
+basic copy command: ../bin/rgang.py "--rsh=rsh -F" --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin --nway=4 --rcp=scp -c "fnapcf.fnal.gov{,,},hppc{,,}" ../bin/rgang.py /tmpxxxx
+
+1st check error
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin --rcp=scp -c fnapcf.fnal.gov{,,},hppc{,,} ../bin/rgang.py /tmpxxxx >stdout 2>stderr
+0.26user 0.04system 0:01.33elapsed 22%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1246major+2299minor)pagefaults 0swaps
+error copy OK
+now check various copies
+
+testing with --nway=4
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin --nway=4 --rcp=scp -c fnapcf.fnal.gov{,,},hppc{,,} ../bin/rgang.py /tmp/rgang.pyx >stdout 2>stderr
+0.26user 0.06system 0:03.37elapsed 9%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1552major+2547minor)pagefaults 0swaps
+copy OK
+
+testing with --nway=1
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin --nway=1 --rcp=scp -c fnapcf.fnal.gov{,,},hppc{,,} ../bin/rgang.py /tmp/rgang.pyx >stdout 2>stderr
+0.25user 0.01system 0:07.86elapsed 3%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (863major+1482minor)pagefaults 0swaps
+copy OK
+
+testing with --serial
+executing: ../bin/rgang.py --rsh=rsh -F --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin --serial --rcp=scp -c fnapcf.fnal.gov{,,},hppc{,,} ../bin/rgang.py /tmp/rgang.pyx >stdout 2>stderr
+0.29user 0.03system 0:02.81elapsed 11%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1246major+2375minor)pagefaults 0swaps
+copy OK
+executing: ../bin/rgang.py --path=/tmp:/fnal/ups/prd/python/v2_1a/IRIX-6-5/bin:/p/openssh/v3_5p1/bin/:/fnal/ups/prd/ssh/v1_2_27g/IRIX-6-5/bin fnapcf.fnal.gov{,,},hppc{,,} rm -f /tmp/rgang.pyx >stdout 2>stderr
+0.31user 0.05system 0:10.97elapsed 3%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (2164major+2719minor)pagefaults 0swaps
+All is well
