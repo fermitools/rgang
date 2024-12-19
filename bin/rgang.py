@@ -3,10 +3,10 @@
 #   Apr 13, 2001. "TERMS AND CONDITIONS" governing this file are in the README
 #   or COPYING file. If you do not have such a file, one can be obtained by
 #   contacting Ron or Fermi Lab in Batavia IL, 60510, phone: 630-840-3000.
-#   $RCSfile: rgang.py,v $ $Revision: 1.209 $ $Date: 2024/07/23 18:22:26 $
+#   $RCSfile: rgang.py,v $ $Revision: 1.210 $ $Date: 2024/12/19 21:39:25 $
 
-rcs_keyword='$Revision: 1.209 $$Date: 2024/07/23 18:22:26 $'
-VERSION='3.9.3 cvs: %s'%(rcs_keyword,)
+rcs_keyword='$Revision: 1.210 $$Date: 2024/12/19 21:39:25 $'
+VERSION='3.9.4 cvs: %s'%(rcs_keyword,)
 
 import os.path                          # basename
 import sys                              # argv
@@ -101,7 +101,7 @@ Note: when using node expansion, don't forget to quote (or escape) the\n\
 env.vars set by rgang:\n\
       RGANG_MACH_ID, RGANG_INITIATOR, RGANG_PARENT, RGANG_PARENT_ID, RGANG_NODES\n\
 rgang sources $HOME/.rgangrc\n\
-Sending SIGQUIT (usually ctl-\) to the main rgang process should print out\n\
+Sending SIGQUIT (usually ctl-\\) to the main rgang process should print out\n\
 the following status line (possibly overwriting some existing output):\n\
 \\rnodes=     stOB=       stEB=       inc=     ok=     err=     conn=    expt=   \n\
 With:\n\
