@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Build the local .tar.gz file from localhost.  The tar command is
 # currently using too many 
 # work on this more later.
@@ -16,5 +16,5 @@ VERSION=`grep '%define vers'  ../*spec | awk ' { print $3 } '`
 
 tar --exclude '.git' --exclude '*.tar.gz' --exclude '*.sw*' \
     --exclude '.gitignore' --exclude '.tar' --exclude '*.list' \
-    --exclude '*~' \
+    --exclude '*~' --exclude 'test_*' \
     -czpf ../${PACKAGE}-${VERSION}.tar.gz ../*

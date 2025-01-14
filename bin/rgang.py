@@ -3,9 +3,9 @@
 #   Apr 13, 2001. "TERMS AND CONDITIONS" governing this file are in the README
 #   or COPYING file. If you do not have such a file, one can be obtained by
 #   contacting Ron or Fermi Lab in Batavia IL, 60510, phone: 630-840-3000.
-#   $RCSfile: rgang.py,v $ $Revision: 1.212 $ $Date: 2025/01/14 21:02:41 $
+#   $RCSfile: rgang.py,v $ $Revision: 1.213 $ $Date: 2025/01/14 21:52:08 $
 
-rcs_keyword='$Revision: 1.212 $$Date: 2025/01/14 21:02:41 $'
+rcs_keyword='$Revision: 1.213 $$Date: 2025/01/14 21:52:08 $'
 VERSION='3.9.4 cvs: %s'%(rcs_keyword,)
 
 import os.path                          # basename
@@ -597,10 +597,9 @@ def expand( espec, explvl=0 ):
         TRACE( 10, 'except - expand' )
         exc, value, tb = sys.exc_info()
         sys.stderr.write('Error expanding node list "%s": %s: %s\n'%(especIn,exc,value) )
-        sys.stderr.write('Prehaps an invalid decimal/octal/hex digit\n' )
-        sys.stderr.write('remember: in the \'{seq1-seq2}\' syntax, seq2\n' )
-        sys.stderr.write('can begin with \'0x\' to force hex or \'0\' to\n' )
-        sys.stderr.write('force octal\n' )
+        sys.stderr.write('Prehaps an invalid decimal/octal/hex digit?\n' )
+        sys.stderr.write('Remember: in the \'{seq1-seq2}\' syntax, seq2 can begin\n' )
+        sys.stderr.write('with \'0x\' to force hex or \'0\' to force octal.\n' )
         if g_opt['tlvlmsk']:
             for ln in traceback.format_exception( exc, value, tb ):
                 sys.stderr.write(ln)
@@ -1489,7 +1488,7 @@ def wait_nohang( pid ):
     return rpid,rstatus  # wait
 
 
-g_opt={'tlvlmsk':0}                     # and init so test script importing
+g_opt={'tlvlmsk':0,'verbose':0,'farmlets':'.'}         # and init so test script importing
                                         # rgang (to test rgang.expand(),
                                         # for example) don't have to.
 g_internal_info=[]                      # another (or the most) important global
