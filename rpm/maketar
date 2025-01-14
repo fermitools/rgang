@@ -10,11 +10,14 @@
 PACKAGE=`grep '%define lname' ../*spec | awk ' { print $3 } '`
 VERSION=`grep '%define vers'  ../*spec | awk ' { print $3 } '`
 
+(cd ../bin; test -L rgang || ln -s rgang.py rgang )
+
 #########################################################################
 ### main () #############################################################
 #########################################################################
 
 tar --exclude '.git' --exclude '*.tar.gz' --exclude '*.sw*' \
-    --exclude '.gitignore' --exclude '.tar' --exclude '*.list' \
-    --exclude '*~' --exclude 'test_*' \
+    --exclude '.*ignore' --exclude '.tar' --exclude '*.list' \
+    --exclude '*~' --exclude 'test_*' --exclude CVS \
+    --exclude '__pycache__' --exclude 'cvs*' --exclude 'ups' \
     -czpf ../${PACKAGE}-${VERSION}.tar.gz ../*

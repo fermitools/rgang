@@ -1,2 +1,6 @@
 CVS
 .cvsignore
+*/.cvsignore
+*~
+*/*~
+bin/__pycache__

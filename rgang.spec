@@ -44,8 +44,6 @@ fi
 
 %check
 python3 -m py_compile ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang
-python3 -m py_compile ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang_rsh
-python3 -m py_compile ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang_ssh
 
 %files
 %defattr(-,root,root)
@@ -77,4 +75,3 @@ python3 -m py_compile ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang_ssh
 
 * Mon Jun 10 2013  Ron Rechenmacker   3.4
 - Author of rgang 
-
