@@ -3,8 +3,8 @@
 #  or COPYING file. If you do not have such a file, one can be obtained by
 #  contacting Ron or Fermi Lab in Batavia IL, 60510, phone: 630-840-3000.
 #  $RCSfile: Makefile,v $
-#  $Revision: 1.40 $
-#  $Date: 2024/12/19 21:39:25 $
+#  $Revision: 1.41 $
+#  $Date: 2025/01/14 17:21:32 $
 
 # NOTE: freeze utility is from python distribution directory tree; not
 #       the installation tree.
@@ -23,10 +23,13 @@ SYS_PY_V :=  $(shell echo ${PYDIST_V} | grep -o '^[0-9]\.[0-9]')
 default:
 	@echo make targets are: `grep '^[a-z]*:' Makefile`
 
-.PHONY: rpm
-rpm:
-	$(MAKE) -C $@ $@
-	@echo Done with rpm
+.PHONY: sources
+sources:
+	@echo "make sources"
+	cd rpm; ./maketar
+
+srpm: sources
+	rpmbuild -bs --define '_sourcedir .' --define '_srcrpmdir .' rgang.spec
 
 frozen:
 	if [ -f /usr/lib/python${SYS_PY_V}/Tools/freeze/freeze.py ];then\

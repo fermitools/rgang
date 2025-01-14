@@ -7,8 +7,8 @@
 ### Configuration #######################################################
 #########################################################################
 
-PACKAGE=`grep '%define lname' *spec | awk ' { print $3 } '`
-VERSION=`grep '%define vers'  *spec | awk ' { print $3 } '`
+PACKAGE=`grep '%define lname' ../*spec | awk ' { print $3 } '`
+VERSION=`grep '%define vers'  ../*spec | awk ' { print $3 } '`
 
 #########################################################################
 ### main () #############################################################
@@ -17,4 +17,4 @@ VERSION=`grep '%define vers'  *spec | awk ' { print $3 } '`
 tar --exclude '.git' --exclude '*.tar.gz' --exclude '*.sw*' \
     --exclude '.gitignore' --exclude '.tar' --exclude '*.list' \
     --exclude '*~' \
-    -czpf ~/rpmbuild/SOURCES/${PACKAGE}-${VERSION}.tar.gz ../*
+    -czpf ../${PACKAGE}-${VERSION}.tar.gz ../*

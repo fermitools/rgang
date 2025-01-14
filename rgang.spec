@@ -1,4 +1,5 @@
-%define vers 3.9.0
+#!/bin/sh
+%define vers 3.9.4
 %define lname rgang
 %define source0 ./%{lname}-%{vers}.tar.gz
 
