@@ -35,7 +35,7 @@ if [[ $RPM_BUILD_ROOT != "/" ]]; then
     %{__rm} -rf $RPM_BUILD_ROOT
 fi
 %{__mkdir_p} ${RPM_BUILD_ROOT}/%{_exec_prefix}
-%{__cp} -va ./usr ${RPM_BUILD_ROOT}
+%{__cp} -va ./bin ${RPM_BUILD_ROOT}
 
 %clean
 if [[ $RPM_BUILD_ROOT != "/" ]]; then
@@ -43,9 +43,9 @@ if [[ $RPM_BUILD_ROOT != "/" ]]; then
 fi
 
 %check
-python -m py_compile ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang
-python -m py_compile ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang_rsh
-python -m py_compile ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang_ssh
+python3 -m py_compile ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang
+python3 -m py_compile ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang_rsh
+python3 -m py_compile ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang_ssh
 
 %files
 %defattr(-,root,root)
@@ -54,6 +54,13 @@ python -m py_compile ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang_ssh
 %{_exec_prefix}/bin/rgang*
 
 %changelog
+* Tue Jan 14 2025   Ron Rechenmacher <ron@fnal.gov> 3.9.4
+- change script shebang from "/usr/bin/env python" to "/bin/env python3"
+- change default rsh/rcp to ssh/scp
+- python2/3 compatible
+- add verbose logging messages
+- fixed nodespec processing
+
 * Thu Apr 07 2016   Ron Rechenmacher <ron@fnal.gov> 3.8.0
 - better handling of files in node specification
 

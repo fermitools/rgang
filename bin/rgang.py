@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/bin/env python
 #   This file (rgang.py) was created by Ron Rechenmacher <ron@fnal.gov> on
 #   Apr 13, 2001. "TERMS AND CONDITIONS" governing this file are in the README
 #   or COPYING file. If you do not have such a file, one can be obtained by
 #   contacting Ron or Fermi Lab in Batavia IL, 60510, phone: 630-840-3000.
-#   $RCSfile: rgang.py,v $ $Revision: 1.210 $ $Date: 2024/12/19 21:39:25 $
+#   $RCSfile: rgang.py,v $ $Revision: 1.211 $ $Date: 2025/01/14 20:34:43 $
 
-rcs_keyword='$Revision: 1.210 $$Date: 2024/12/19 21:39:25 $'
+rcs_keyword='$Revision: 1.211 $$Date: 2025/01/14 20:34:43 $'
 VERSION='3.9.4 cvs: %s'%(rcs_keyword,)
 
 import os.path                          # basename
