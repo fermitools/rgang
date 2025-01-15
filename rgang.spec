@@ -7,14 +7,13 @@ Name: fermilab-util_%{lname}
 Summary: Parrallel execution of a command on, or copying of a file.
 Version: %{vers}
 # "Release" is the "version" of the rpm (not the software in the rpm)
-Release: 0
+Release: 0%{?dist}
 License: Fermitools
 Group: Applications/System
-BuildRoot: /var/tmp/%{name}-buildroot
 Source0: %{source0}
 BuildArch: noarch
-BuildRequires: python
-Requires: python
+BuildRequires: python3 python3-devel
+Requires: python3
 
 URL: http://servicedesk.fnal.gov
 
@@ -34,22 +33,26 @@ a command, output is buffered and presented in node specification order.
 if [[ $RPM_BUILD_ROOT != "/" ]]; then
     %{__rm} -rf $RPM_BUILD_ROOT
 fi
-%{__mkdir_p} ${RPM_BUILD_ROOT}/%{_exec_prefix}
-%{__cp} -va ./bin ${RPM_BUILD_ROOT}
+%{__install} -D doc/rgang.8 ${RPM_BUILD_ROOT}/%{_mandir}/man8/rgang.8
+
+%{__install} -D ./bin/rgang.py ${RPM_BUILD_ROOT}/%{python3_sitelib}/rgang.py
+%{__mkdir_p} ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin
+
+%{__ln_s} %{python3_sitelib}/rgang.py ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang
+
 
 %clean
 if [[ $RPM_BUILD_ROOT != "/" ]]; then
     %{__rm} -rf $RPM_BUILD_ROOT
 fi
 
-%check
-python3 -m py_compile ${RPM_BUILD_ROOT}/%{_exec_prefix}/bin/rgang
-
 %files
 %defattr(-,root,root)
-%doc README RELEASE.NOTES rgang_examples.txt
+%doc README doc/RELEASE.NOTES rgang_examples.txt
 %{_mandir}/man8/rgang*
-%{_exec_prefix}/bin/rgang*
+%{_exec_prefix}/bin/rgang
+%{python3_sitelib}/*
+
 
 %changelog
 * Tue Jan 14 2025   Ron Rechenmacher <ron@fnal.gov> 3.9.4
