@@ -1,3 +1,12 @@
+CHANGE(S) FOR VERSION v3_9_4
+
+    - change script shebang from "/usr/bin/env python" to "/bin/env python3"
+    - change default rsh/rcp to ssh/scp
+    - python2/3 compatible
+    - add verbose logging messages
+    - fixed nodespec processing
+
+==========================================================================
 
 CHANGE(S) FOR VERSION v3_8_0
 
