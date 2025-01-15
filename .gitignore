@@ -4,3 +4,4 @@ CVS
 *~
 */*~
 bin/__pycache__
+*.tar.gz
