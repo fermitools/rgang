@@ -35,8 +35,8 @@ if [[ $RPM_BUILD_ROOT != "/" ]]; then
     %{__rm} -rf $RPM_BUILD_ROOT
 fi
 %{__mkdir_p} ${RPM_BUILD_ROOT}/%{_exec_prefix}
-%{__cp} -va ./bin/rgang.py ${RPM_BUILD_ROOT}/usr/lib/python%{python3_version}/
-%{__ln} -s /usr/lib/python%{python3_version}/rgang.py ${RPM_BUILD_ROOT}/bin/rgang 
+%{__cp} -va ./bin/rgang.py ${RPM_BUILD_ROOT}/usr/lib/python%{python3_version}/site-packages/
+%{__ln} -s /usr/lib/python%{python3_version}/site-packages/rgang.py ${RPM_BUILD_ROOT}/bin/rgang 
 
 %clean
 if [[ $RPM_BUILD_ROOT != "/" ]]; then
