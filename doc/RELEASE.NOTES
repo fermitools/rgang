@@ -1,11 +1,3 @@
-CHANGE(S) FOR VERSION v3.9.5
-
-    - in bin/rgang.py, for python v3.14.0+ (with backward compat) -
-      changed re.sub(this,that,istr,0) with re.sub(this,that,istr,count=0)
-    - bumped version in 3 files: README, bin/rgang.py, and rgang.spec
-
-==========================================================================
-
 CHANGE(S) FOR VERSION v3_9_4
 
     - change script shebang from "/usr/bin/env python" to "/bin/env python3"
