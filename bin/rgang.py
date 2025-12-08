@@ -6,7 +6,7 @@
 #   $RCSfile: rgang.py,v $ $Revision: 1.213 $ $Date: 2025/01/14 21:52:08 $
 
 rcs_keyword='$Revision: 1.213 $$Date: 2025/01/14 21:52:08 $'
-VERSION='3.9.4 cvs: %s'%(rcs_keyword,)
+VERSION='3.9.5 cvs: %s'%(rcs_keyword,)
 
 import os.path                          # basename
 import sys                              # argv
@@ -648,15 +648,15 @@ def build_quoted_str( args ):
     # build_quoted_str
 
 def build_sh_single_quoted_str( i_str ):
-    o_str = re.sub("'","<<0>>",i_str,0)
-    o_str = re.sub("<<0>>",'\'"\'"\'',o_str,0)
+    o_str = re.sub("'","<<0>>",i_str,count=0)
+    o_str = re.sub("<<0>>",'\'"\'"\'',o_str,count=0)
     o_str = "'%s'"%(o_str,)
     return (o_str)
     # build_sh_single_quoted_str
 
 def build_sh_doubly_single_quoted_str( i_str ):
-    o_str = re.sub("'","<<0>>",i_str,0)
-    o_str = re.sub("<<0>>",'\'"\'"\'',o_str,0)
+    o_str = re.sub("'","<<0>>",i_str,count=0)
+    o_str = re.sub("<<0>>",'\'"\'"\'',o_str,count=0)
     return (o_str)
     # build_sh_doubly_single_quoted_str
 

@@ -1,5 +1,5 @@
 #!/bin/sh
-%define vers 3.9.4
+%define vers 3.9.5
 %define lname rgang
 %define source0 ./%{lname}-%{vers}.tar.gz
 
@@ -55,7 +55,7 @@ fi
 
 
 %changelog
-* Tue Jan 14 2025   Ron Rechenmacher <ron@fnal.gov> 3.9.4
+* Tue Jan 14 2025   Ron Rechenmacher <ron@fnal.gov> 3.9.5
 - change script shebang from "/usr/bin/env python" to "/bin/env python3"
 - change default rsh/rcp to ssh/scp
 - python2/3 compatible
