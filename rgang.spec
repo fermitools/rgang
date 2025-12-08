@@ -55,7 +55,11 @@ fi
 
 
 %changelog
-* Tue Jan 14 2025   Ron Rechenmacher <ron@fnal.gov> 3.9.5
+* Mon Dec 08 2025   Ron Rechenmacher <ron@fnal.gov> 3.9.5
+- replaced re.sub(this,that,istr,0) with re.sub(this,that,istr,count=0)
+- bumped version
+
+* Tue Jan 14 2025   Ron Rechenmacher <ron@fnal.gov> 3.9.4
 - change script shebang from "/usr/bin/env python" to "/bin/env python3"
 - change default rsh/rcp to ssh/scp
 - python2/3 compatible
