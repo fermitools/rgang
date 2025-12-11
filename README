@@ -58,24 +58,23 @@ be found at: https://github.com/fermitools/rgang
 
 Required Hardware and Software
 ------------------------------
-In the case that a "frozen" version of rgang does not work, users will need to
-also have python.
+Python is required. The end user can attempt to make a "frozen" version of
+rgang.py to remove this requirement.
 
 Product Installation
 --------------------
-Copy the python script (<distdir>/bin/rgang.py) _or_
-python "frozen" version (<distdir>/bin/rgang) to
+Copy the python script (<distdir>/bin/rgang.py) to
   /usr/local/bin or /usr/bin or where every you
 choose, renaming it to whatever you choose.
 
-Note <distdir>/bin/rgang is the python "frozen" version of rgang.py.
-It allows for the _possibility_ to run rgang on a system which does
-not have python. So on systems with python, <distdir>/bin/rgang is not needed.
-The "frozen" version may not work on your system due to incompatibilities
+Note <distdir>/bin/rgang is sym-link to rgang.py and when a large number of
+nodes (i.e > 200) are specified, python will need to be installed on remote nodes.
+If one creates a "frozen" version of rgang.py, the preceding may not be required.
+A "frozen" version may not work on some systems due to incompatibilities
 between it and the system that the frozen version was created on.
 
-If the default "r" commands are not appropriate,
-the python script can be modified OR a "pre-script"
+If the default "remote" commands (remote-shell[ssh] and remote-copy [scp])
+are not appropriate, the python script can be modified OR a "pre-script"
 created that sets the appropriate options
 and then exec's the python script or
 "frozen" version.  Example:
@@ -83,10 +82,7 @@ and then exec's the python script or
    # this script file can be named "rgang"
    exec python rgang.py --rsh=ssh --rcp=scp "$@"
 
-Note: The bin/rgang executable is a python "froozen" version of rgang.py.
-It allows for the _possibility_ to run rgang (bin/rgang) on a system which does
-not have python. So on systems with python, bin/rgang is not needed. You could
-just copy rgang.py to /usr/local/bin/rgang.
+or the RGANG_RSH and RGANG_RCP environment variables can be set.
 
 
 Running the Software

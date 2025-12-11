@@ -5,8 +5,7 @@
 #   contacting Ron or Fermi Lab in Batavia IL, 60510, phone: 630-840-3000.
 #   $RCSfile: rgang.py,v $ $Revision: 1.213 $ $Date: 2025/01/14 21:52:08 $
 
-rcs_keyword = "$Revision: 1.213 $$Date: 2025/12/08 00:00:00 $"
-VERSION = "3.9.5 cvs: %s" % (rcs_keyword,)
+VERSION = "3.9.5"
 
 import os.path  # basename
 import sys  # argv
