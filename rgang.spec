@@ -1,21 +1,16 @@
-#!/bin/sh
-%define vers 3.9.5
-%define lname rgang
-%define source0 ./%{lname}-%{vers}.tar.gz
-
-Name: fermilab-util_%{lname}
+Name: fermilab-util_rgang
 Summary: Parrallel execution of a command on, or copying of a file.
-Version: %{vers}
+Version: 3.9.5
 # "Release" is the "version" of the rpm (not the software in the rpm)
 Release: 0%{?dist}
 License: Fermitools
 Group: Applications/System
-Source0: %{source0}
+Source0: rgang-%{version}.tar.gz
 BuildArch: noarch
 BuildRequires: python3 python3-devel
 Requires: python3
 
-URL: http://servicedesk.fnal.gov
+URL: https://github.com/fermitools/rgang
 
 %description
 RGANG is a tool which allows one to execute commands on or distribute
@@ -48,14 +43,19 @@ fi
 
 %files
 %defattr(-,root,root)
-%doc README doc/RELEASE.NOTES rgang_examples.txt
+%license LICENSE
+%doc README README.intro doc/RELEASE.NOTES rgang_examples.txt
 %{_mandir}/man8/rgang*
 %{_exec_prefix}/bin/rgang
 %{python3_sitelib}/*
 
 
 %changelog
-* Tue Jan 14 2025   Ron Rechenmacher <ron@fnal.gov> 3.9.5
+* Mon Dec 08 2025   Ron Rechenmacher <ron@fnal.gov> 3.9.5
+- replaced re.sub(this,that,istr,0) with re.sub(this,that,istr,count=0)
+- bumped version
+
+* Tue Jan 14 2025   Ron Rechenmacher <ron@fnal.gov> 3.9.4
 - change script shebang from "/usr/bin/env python" to "/bin/env python3"
 - change default rsh/rcp to ssh/scp
 - python2/3 compatible
@@ -74,7 +74,7 @@ fi
 - added a man page, docs are installing into /usr/share/docs
 
 * Mon Jun 10 2013   Lisa Giachetti <lisa@fnal.gov>  3.4-1
-- Made version prior to 3.4-1 
+- Made version prior to 3.4-1
 
 * Mon Jun 10 2013  Ron Rechenmacker   3.4
-- Author of rgang 
+- Author of rgang

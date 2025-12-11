@@ -1,9 +1,7 @@
 CHANGE(S) FOR VERSION v3.9.5
-
     - in bin/rgang.py, for python v3.14.0+ (with backward compat) -
       changed re.sub(this,that,istr,0) with re.sub(this,that,istr,count=0)
     - bumped version in 3 files: README, bin/rgang.py, and rgang.spec
-
 ==========================================================================
 
 CHANGE(S) FOR VERSION v3_9_4
@@ -260,7 +258,7 @@ CHANGE(S) FOR VERSION v3_2
 
     Cvs Log Info:
     The number of files changed: 7
-    
+
     prvTagRev curTagRev     File
     --------- --------- --------------------------------------------
          1.24:1.27      Makefile
@@ -270,8 +268,8 @@ CHANGE(S) FOR VERSION v3_2
           1.1:1.2       doc/cvs_rel_notes.sh
          1.41:1.46      test/test.sh
           1.2:1.3       ups/rgang.table
-    
-    
+
+
     File: Makefile:
     flavor is changing
     note format for <next_rev>
@@ -323,7 +321,7 @@ CHANGE(S) FOR VERSION v3_1
 
 	Cvs Log Info:
 	The number of files changed: 6
-	
+
 	prvTagRev curTagRev     File
 	--------- --------- --------------------------------------------
 	     1.23:1.24      Makefile
@@ -332,8 +330,8 @@ CHANGE(S) FOR VERSION v3_1
 	     1.29:1.30      bin/rgang
 	    1.137:1.142     bin/rgang.py
 	     1.33:1.41      test/test.sh
-	
-	
+
+
 	File: Makefile:
 	rebuild frozen, adjust Makefile tar instructions
 	----------------------------------------------------
@@ -377,15 +375,15 @@ CHANGE(S) FOR VERSION v3_0   2008.05.23
 
 	Cvs Log Info:
 	The number of files changed: 4
-	
+
 	prvTagRev curTagRev     File
 	--------- --------- --------------------------------------------
 	     1.22:1.23      Makefile
 	     1.30:1.31      README
 	    1.119:1.137     bin/rgang.py
 	     1.19:1.33      test/test.sh
-	
-	
+
+
 	File: Makefile:
 	freezing with python v2_2_3
 	----------------------------------------------------
@@ -396,25 +394,25 @@ CHANGE(S) FOR VERSION v3_0   2008.05.23
 	v3_0
 	verbose adds "# mach_idx=%d" to --list
 	move class NodeInfo, do not init g_thisnode until after --version,
-	  adjust TRACE to deal with it, fix main exception for SystemExit 
+	  adjust TRACE to deal with it, fix main exception for SystemExit
 	make sure dflt_path is in path, move initiator_node_status to
-	  ACTIVE OUTPUT 
+	  ACTIVE OUTPUT
 	exception/control-C adjustments
 	clear buffered std* after write, init g_ret_info and
-	  g_internal_info better for --serial --err-file ^C 
+	  g_internal_info better for --serial --err-file ^C
 	check g_timeout_l for general "pool" timeout, add
 	  initiator_node_status (err-file) to ^C, add except to rgang node
-	  list write 
+	  list write
 	pickle_to_stdout when timeout_wait == None
 	make ret_info = g_ret_info
 	make more globals and add to ^C processing, add set_connected_g,
-	  tweak --serial note 
+	  tweak --serial note
 	--serial help, better -V (version) info
 	start second_ctrl_c, add comments(doc), minor formating
 	get stderr
 	make pickle_to_stdout routine, adjust TRACEs, do_stage_before
 	  do_output, enable intermediate pickle, add comments/doc/help, use
-	  RGANG_MACH_ID in TRACE 
+	  RGANG_MACH_ID in TRACE
 	add TRACE --- copy with --nway seems to be messed up :(
 	moved stage rgang processing up
 	preparing for periodic pypickle updates
@@ -422,10 +420,10 @@ CHANGE(S) FOR VERSION v3_0   2008.05.23
 	----------------------------------------------------
 	File: test/test.sh:
 	adjust ctrl_c to test more, add pstree_python, add test_version,
-	  add check for hostname in /etc/hosts, tweak echos 
+	  add check for hostname in /etc/hosts, tweak echos
 	add test_input_to_branches
 	add "most" and adjust .rgangrc in big_ssh (because a sleep make all
-	  the other tests take too long 
+	  the other tests take too long
 	just note node_num
 	add more --nway runs to big_ssh, add vecho and qecho
 	fix stderr, check status in base, add big{_ssh,}_output
@@ -634,7 +632,7 @@ Version 2.0   2003/06/11
 	      or as the argument to --skip.
 	      3) changed default header to -n0 so "rsh node cmd" output
 	      will be the same as "rgang node cmd" output.
-	      4) set RGANG_MACH_ID environment variable; 
+	      4) set RGANG_MACH_ID environment variable;
 	      "rgang node{1-3} 'echo -n $RGANG_MACH_ID'" will product output
 	      "012"
 Version 1.12  2003/06/02

@@ -15,7 +15,7 @@ The original "rgang" at fermilab was implemented in Bourne shell.
 
 Because the original "rgang" executes the commands on the specified nodes
 serially, execution time is proportional to the number of nodes.
-We have implemented, in Python, a parallel version of "rgang". 
+We have implemented, in Python, a parallel version of "rgang".
 This version forks separate rsh/ssh children, which execute in parallel.
 After successfully waiting on returns from each child or after timing out,
 this latest version of rgang displays the node responses in identical fashion

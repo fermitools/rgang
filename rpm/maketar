@@ -1,14 +1,14 @@
 #!/bin/sh
 # Build the local .tar.gz file from localhost.  The tar command is
-# currently using too many 
+# currently using too many
 # work on this more later.
 
 #########################################################################
 ### Configuration #######################################################
 #########################################################################
 
-PACKAGE=`grep '%define lname' ../*spec | awk ' { print $3 } '`
-VERSION=`grep '%define vers'  ../*spec | awk ' { print $3 } '`
+PACKAGE="rgang"
+VERSION=`grep Version: ../*spec | awk '{print $2}'`
 
 (cd ../bin; test -L rgang || ln -s rgang.py rgang )
 
