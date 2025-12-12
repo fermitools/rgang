@@ -1,0 +1,775 @@
+From ronlap, doing "all" tests:     base
+    version
+    stdout
+    stderr
+    stdin
+    quote
+    mach_id
+    err_file
+    other
+    invalid_rsh
+    copy
+    big_output
+    input_to_branches
+    ctrl_c
+    big_ssh_output
+    big_ssh
+nodespec=localhost{,,,}{,,} specifies 12 nodes
+3393800 pts/1    S+     0:00 /bin/sh ./test.sh base
+
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-c' 'localhost{,,,}{,,}' '../bin/rgang.py' '/tmp' >|stdout 2>|stderr
+
+real	0m0.928s
+user	0m1.045s
+sys	0m0.154s
+
+if we get here then we can start testing some things...
+
+base command: ../bin/rgang.py  --path=/tmp:/usr/bin -n --nway=4 "localhost{,,,}{,,}" 'echo $RGANG_MACH_ID - hi'
+
+3395017 pts/1    S+     0:00 /bin/sh ./test.sh version
+
+test version...
+Fri Dec 12 10:27:07 AM CST 2025
+executing:  '../bin/rgang.py' '--version' >|stdout 2>|stderr
+
+real	0m0.058s
+user	0m0.047s
+sys	0m0.009s
+Rgang version: 3.9.5
+Python version: 3.9.23 (main, Aug 19 2025, 00:00:00) 
+[GCC 11.5.0 20240719 (Red Hat 11.5.0-11)] on linux
+3395044 pts/1    S+     0:00 /bin/sh ./test.sh stdout
+
+
+test stdout...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--nway=0' 'localhost{,,,}{,,}' 'echo $RGANG_MACH_ID - hi' >|stdout 2>|stderr
+
+real	0m0.837s
+user	0m0.606s
+sys	0m0.101s
+    stdout seems OK  (stdoutlc=12)
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--nway=3' 'localhost{,,,}{,,}' 'echo $RGANG_MACH_ID - hi' >|stdout 2>|stderr
+
+real	0m1.221s
+user	0m0.201s
+sys	0m0.043s
+    stdout seems OK  (stdoutlc=12)
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--nway=4' 'localhost{,,,}{,,}' 'echo $RGANG_MACH_ID - hi' >|stdout 2>|stderr
+
+real	0m1.283s
+user	0m0.275s
+sys	0m0.050s
+    stdout seems OK  (stdoutlc=12)
+3399939 pts/1    S+     0:00 /bin/sh ./test.sh stderr
+
+
+test stderr...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--tlvlmsk=0' '--nway=0' 'localhost{,,,}{,,}' 'sh -c 'echo $RGANG_MACH_ID - hi 1>&2'' >|stdout 2>|stderr
+
+real	0m0.838s
+user	0m0.597s
+sys	0m0.108s
+10 - hi
+11 - hi
+    stderr seems OK
+Note: with nodespec="localhost{,,,}{,,}", sockets in TIME_WAIT at this
+point could be about 550. It is: 60
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--tlvlmsk=0' '--nway=2' 'localhost{,,,}{,,}' 'sh -c 'echo $RGANG_MACH_ID - hi 1>&2'' >|stdout 2>|stderr
+
+real	0m1.659s
+user	0m0.166s
+sys	0m0.032s
+10 - hi
+11 - hi
+    stderr seems OK
+Note: with nodespec="localhost{,,,}{,,}", sockets in TIME_WAIT at this
+point could be about 550. It is: 72
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--tlvlmsk=0' '--nway=4' 'localhost{,,,}{,,}' 'sh -c 'echo $RGANG_MACH_ID - hi 1>&2'' >|stdout 2>|stderr
+
+real	0m1.299s
+user	0m0.271s
+sys	0m0.052s
+10 - hi
+11 - hi
+    stderr seems OK
+Note: with nodespec="localhost{,,,}{,,}", sockets in TIME_WAIT at this
+point could be about 550. It is: 84
+3405408 pts/1    S+     0:00 /bin/sh ./test.sh stdin
+
+
+test stdin...
+piping "hi" into:
+executing:  '../bin/rgang.py' 'localhost' 'read x; echo $x' >|stdout 2>|stderr
+now try cmd with stdin closed
+executing:  '../bin/rgang.py' 'localhost' 'echo hi' >|stdout 2>|stderr
+    stdin seems OK
+3405659 pts/1    S+     0:00 /bin/sh ./test.sh quote
+
+
+test quoting:   rsh node csh -fc 'echo "hi    there"'
+                should produce: <blank>   (what gets to the remote shell is: csh -fc echo "hi    there")
+                Note: some node may or may not produce a (single) new-line with the above line
+       while:   rsh node "csh -fc 'echo \"hi    there\"'"
+                should produce: hi    there
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n0' '--nway=1' 'localhost{,,,}{,,}' 'csh' '-fc' 'echo "hi    there"' >|stdout 2>|stderr
+
+real	0m5.075s
+user	0m0.121s
+sys	0m0.033s
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n0' '--nway=1' 'localhost{,,,}{,,}' 'csh -fc 'echo "hi    there"'' >|stdout 2>|stderr
+
+real	0m5.074s
+user	0m0.123s
+sys	0m0.039s
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n0' '--nway=1' 'localhost{,,,}{,,}' 'csh -fc "echo 'hi    there'"' >|stdout 2>|stderr
+
+real	0m5.065s
+user	0m0.112s
+sys	0m0.029s
+3414890 pts/1    S+     0:00 /bin/sh ./test.sh mach_id
+
+
+testing $RGANG_MACH_ID $RGANG_PARENT_ID
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n0' '--nway=1' 'localhost{,,,}{,,}' 'echo $RGANG_MACH_ID $RGANG_PARENT_ID' >|stdout 2>|stderr
+
+real	0m5.046s
+user	0m0.111s
+sys	0m0.030s
+test of $RGANG_MACH_ID $RGANG_PARENT_ID OK
+3418009 pts/1    S+     0:00 /bin/sh ./test.sh err_file
+
+
+now check --err-file  Note: because of rsh return status issues and also
+    shell (sh/csh) compatibility issues, the status for some of the node
+    will be just 0 or 1 (no-error or error) instead of the actual
+    command status (which, for error, may be other than 1)
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n0' '--nway=3' '--err-file=err-file' 'localhost{,,,}{,,}' 'ls .bashrcxxxxxx' >|stdout 2>|stderr
+
+real	0m1.215s
+user	0m0.224s
+sys	0m0.045s
+ls: cannot access '.bashrcxxxxxx': No such file or directory
+ls: cannot access '.bashrcxxxxxx': No such file or directory
+--err-file OK
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n0' '--nway=3' '--err-file=err-file' 'localhost{,,,}{,,}' 'test $RGANG_MACH_ID -ne 2 && true || false' >|stdout 2>|stderr
+
+real	0m1.236s
+user	0m0.234s
+sys	0m0.037s
+--err-file OK
+3421529 pts/1    S+     0:00 /bin/sh ./test.sh other
+
+
+testing with $otherOpt=--nway=4
+test zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--nway=4' 'localhost{,,,}{,,}' 'echo hi' >|stdout 2>|stderr
+
+real	0m1.263s
+user	0m0.282s
+sys	0m0.048s
+    error status seems OK
+test non-zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--nway=4' 'localhost{,,,}{,,}' 'ls /sdlkfjslk2223' >|stdout 2>|stderr
+
+real	0m1.289s
+user	0m0.274s
+sys	0m0.050s
+ls: cannot access '/sdlkfjslk2223': No such file or directory
+ls: cannot access '/sdlkfjslk2223': No such file or directory
+    error status seems OK
+
+testing with $otherOpt=--nway=2
+test zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--nway=2' 'localhost{,,,}{,,}' 'echo hi' >|stdout 2>|stderr
+
+real	0m1.661s
+user	0m0.165s
+sys	0m0.038s
+    error status seems OK
+test non-zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--nway=2' 'localhost{,,,}{,,}' 'ls /sdlkfjslk2223' >|stdout 2>|stderr
+
+real	0m1.669s
+user	0m0.153s
+sys	0m0.041s
+ls: cannot access '/sdlkfjslk2223': No such file or directory
+ls: cannot access '/sdlkfjslk2223': No such file or directory
+    error status seems OK
+
+testing with $otherOpt=--nway=1
+test zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--nway=1' 'localhost{,,,}{,,}' 'echo hi' >|stdout 2>|stderr
+
+real	0m5.082s
+user	0m0.124s
+sys	0m0.025s
+    error status seems OK
+test non-zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--nway=1' 'localhost{,,,}{,,}' 'ls /sdlkfjslk2223' >|stdout 2>|stderr
+
+real	0m5.065s
+user	0m0.115s
+sys	0m0.026s
+ls: cannot access '/sdlkfjslk2223': No such file or directory
+ls: cannot access '/sdlkfjslk2223': No such file or directory
+    error status seems OK
+
+testing with $otherOpt=--combine
+test zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--combine' 'localhost{,,,}{,,}' 'echo hi' >|stdout 2>|stderr
+
+real	0m0.808s
+user	0m0.606s
+sys	0m0.109s
+    error status seems OK
+test non-zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--combine' 'localhost{,,,}{,,}' 'ls /sdlkfjslk2223' >|stdout 2>|stderr
+
+real	0m0.836s
+user	0m0.613s
+sys	0m0.100s
+    error status seems OK
+
+testing with $otherOpt=--pty
+test zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--pty' 'localhost{,,,}{,,}' 'echo hi' >|stdout 2>|stderr
+
+real	0m0.841s
+user	0m0.601s
+sys	0m0.117s
+    error status seems OK
+test non-zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--pty' 'localhost{,,,}{,,}' 'ls /sdlkfjslk2223' >|stdout 2>|stderr
+
+real	0m0.869s
+user	0m0.625s
+sys	0m0.109s
+ls: cannot access '/sdlkfjslk2223': No such file or directory
+ls: cannot access '/sdlkfjslk2223': No such file or directory
+    error status seems OK
+
+testing with $otherOpt=--do-local
+test zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--do-local' 'localhost{,,,}{,,}' 'echo hi' >|stdout 2>|stderr
+
+real	0m0.794s
+user	0m0.557s
+sys	0m0.106s
+    error status seems OK
+test non-zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--do-local' 'localhost{,,,}{,,}' 'ls /sdlkfjslk2223' >|stdout 2>|stderr
+
+real	0m0.766s
+user	0m0.542s
+sys	0m0.101s
+ls: cannot access '/sdlkfjslk2223': No such file or directory
+ls: cannot access '/sdlkfjslk2223': No such file or directory
+    error status seems OK
+
+testing with $otherOpt=--serial
+test zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--serial' 'localhost{,,,}{,,}' 'echo hi' >|stdout 2>|stderr
+
+real	0m3.582s
+user	0m0.410s
+sys	0m0.085s
+    error status seems OK
+test non-zero error status...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--serial' 'localhost{,,,}{,,}' 'ls /sdlkfjslk2223' >|stdout 2>|stderr
+
+real	0m3.586s
+user	0m0.406s
+sys	0m0.090s
+ls: cannot access '/sdlkfjslk2223': No such file or directory
+ls: cannot access '/sdlkfjslk2223': No such file or directory
+    error status seems OK
+test different commands...
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-n' '--nway=1' 'localhost{,,,}{,,}' 'sleep' '5' '>&-' '2>&-' '&' >|stdout 2>|stderr
+
+real	0m5.073s
+user	0m0.141s
+sys	0m0.025s
+    command seems OK
+3448490 pts/1    S+     0:00 /bin/sh ./test.sh invalid_rsh
+
+test non-zero error status...
+executing:  '../bin/rgang.py' '--rsh=invalid_rsh' '--path=/tmp:/usr/bin' 'localhost{,,,}{,,}' 'ls /sdlkfjslk2223' >|stdout 2>|stderr
+
+real	0m0.116s
+user	0m0.207s
+sys	0m0.123s
+Error execing invalid_rsh
+Error execing invalid_rsh
+    error status seems OK
+test non-zero error status...
+executing:  '../bin/rgang.py' '--rsh=invalid_rsh' '--path=/tmp:/usr/bin' 'localhost{,,,}{,,}' 'ls /sdlkfjslk2223' >|stdout 2>|stderr
+
+real	0m0.119s
+user	0m0.188s
+sys	0m0.135s
+Error execing invalid_rsh
+Error execing invalid_rsh
+    error status seems OK
+3448559 pts/1    S+     0:00 /bin/sh ./test.sh copy
+
+
+now a quick copy
+
+basic copy command: ../bin/rgang.py  --path=/tmp:/usr/bin --nway=4  -c "localhost{,,,}{,,}" ../bin/rgang.py /tmpxxxx
+
+1st check error
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '-c' 'localhost{,,,}{,,}' '../bin/rgang.py' '/tmpxxxx' >|stdout 2>|stderr
+
+real	0m0.908s
+user	0m1.056s
+sys	0m0.129s
+dest open("/tmpxxxx"): Permission denied
+failed to upload file ../bin/rgang.py to /tmpxxxx
+error copy OK
+now check various copies
+
+testing with --nway=4
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '--nway=4' '-c' 'localhost{,,,}{,,}' '../bin/rgang.py' '/tmp/rgang.pyx' >|stdout 2>|stderr
+
+real	0m1.619s
+user	0m0.501s
+sys	0m0.074s
+copy OK
+
+testing with --nway=1
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '--nway=1' '-c' 'localhost{,,,}{,,}' '../bin/rgang.py' '/tmp/rgang.pyx' >|stdout 2>|stderr
+
+real	0m8.818s
+user	0m0.140s
+sys	0m0.028s
+copy OK
+
+testing with --serial
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' '--serial' '-c' 'localhost{,,,}{,,}' '../bin/rgang.py' '/tmp/rgang.pyx' >|stdout 2>|stderr
+
+real	0m3.684s
+user	0m0.678s
+sys	0m0.097s
+copy OK
+executing:  '../bin/rgang.py' '--path=/tmp:/usr/bin' 'localhost{,,,}{,,}' 'rm -f /tmp/rgang.pyx' >|stdout 2>|stderr
+
+real	0m0.828s
+user	0m0.617s
+sys	0m0.095s
+3457409 pts/1    S+     0:00 /bin/sh ./test.sh big_output
+
+
+testing a lot of output (catting the big rgang python source file :)
+
+executing:  '../bin/rgang.py' '-n0' '--path=/tmp:/usr/bin' 'localhost{,,,}{,,}' 'cat /tmp/rgang.py' >|stdout 2>|stderr
+
+real	0m8.016s
+user	0m5.507s
+sys	0m3.161s
+executing:  '../bin/rgang.py' '-n0' '--path=/tmp:/usr/bin' '--nway=5' 'localhost{,,,}{,,}' 'cat /tmp/rgang.py' >|stdout 2>|stderr
+
+real	0m3.220s
+user	0m1.080s
+sys	0m0.663s
+big_output OK
+3460747 pts/1    S+     0:00 /bin/sh ./test.sh input_to_branches
+
+
+testing (stdin) input to branches
+
+testing with nway=
+testing with nway=--nway=3
+3463963 pts/1    S+     0:00 /bin/sh ./test.sh ctrl_c
+
+
+test double control-C
+
+
+Note: (double) control-C functionality when --nway is less than the number of
+nodes is "iffy". One would perhaps hope that a control-C (SIGINT) of an rsh/ssh would
+cause a control-c (SIGINT) signal to be propagated to the remote command.
+That is what seems to happen when I do something like:
+   $ rsh localhost rsh localhost rsh localhost 'echo hi;sleep 30;echo there'
+   hi
+   ^C
+   $ ps auxww | grep ' sleep '
+
+But the rgang/test script environment is complicated.
+The command:
+rgang --rsh=/usr/bin/rsh --nway=1 "localhost{,,,}{,,,}" 'echo $RGANG_MACH_ID - hi;sleep 5;sleep `expr 4 \* \( 16 - $RGANG_MACH_ID \)`;echo there'
+seems to work interactively, but leave lingering/defunct processes when run from this
+script.
+
+loop start: netstat -t | grep WAIT | wc -l  ==> 288
+wait 20 seconds for WAIT's to decrease
+loop start: netstat -t | grep WAIT | wc -l  ==> 154
+wait 20 seconds for WAIT's to decrease
+loop start: netstat -t | grep WAIT | wc -l  ==> 89
+wait 20 seconds for WAIT's to decrease
+loop start: netstat -t | grep WAIT | wc -l  ==> 3
+num_nodes=48
+executing:  '../bin/rgang.py' 'localhost{,,,}{,,,}{,,}' 'echo $RGANG_MACH_ID - hi;sleep 5;sleep `expr 4 \* \( 48 - $RGANG_MACH_ID \)`;echo there' >|stdout 2>|stderr
+           |                  |-bash(145088)-+-bash(3393774)---test.sh(3393776)---test.sh(3463963)-+-python3(3464048)-+-ssh(3464054+
+           |                  |              |                                                     |                  |-ssh(3464055+
+           |                  |              |                                                     |                  |-ssh(3464056+
+           |                  |              |                                                     |                  |-ssh(3464057+
+           |                  |              |                                                     |                  |-ssh(3464058+
+           |                  |              |                                                     |                  |-ssh(3464059+
+           |                  |              |                                                     |                  |-ssh(3464060+
+           |                  |              |                                                     |                  |-ssh(3464061+
+rgang_pid=3464048
+sub_processes=48 sigs_sent=47 exited=48
+
+another ^C to stop output in 3210
+
+rgangs=0
+rgangs=0   seconds since start=18
+test_ctrl_c OK
+loop start: netstat -t | grep WAIT | wc -l  ==> 51
+num_nodes=8
+executing:  '../bin/rgang.py' '--nway=1' 'localhost{,,,}{,}' 'echo $RGANG_MACH_ID - hi;sleep 5;sleep `expr 4 \* \( 8 - $RGANG_MACH_ID \)`;echo there' >|stdout 2>|stderr
+           |            |-sshd(3469268)---sshd(3469355)---python3(3469356)-+-bash(3469544)---sleep(3470885)
+           |            |                                                  `-ssh(3469545)
+           |            |-sshd(3469554)---sshd(3469641)---python3(3469642)-+-bash(3469830)---sleep(3470887)
+           |            |                                                  `-ssh(3469831)
+           |            |-sshd(3469840)---sshd(3469927)---python3(3469928)-+-bash(3470116)---sleep(3470889)
+           |            |                                                  `-ssh(3470117)
+           |            |-sshd(3470126)---sshd(3470213)---python3(3470214)-+-bash(3470402)---sleep(3470498)
+           |            |                                                  `-ssh(3470403)
+rgang_pid=3468960
+|
+sub_processes=2 sigs_sent=2 exited=2
+
+another ^C to stop output in 3rgangs=6
+           |-sshd(4611)-+-sshd(3469268)---sshd(3469355)---python3(3469356)-+-bash(3469544)---sleep(3470885)
+           |            |                                                  `-ssh(3469545)
+           |            |-sshd(3469554)---sshd(3469641)---python3(3469642)-+-bash(3469830)---sleep(3470887)
+           |            |                                                  `-ssh(3469831)
+           |            |-sshd(3469840)---sshd(3469927)---python3(3469928)-+-bash(3470116)---sleep(3470889)
+           |            |                                                  `-ssh(3470117)
+           |            |-sshd(3470126)---sshd(3470213)---python3(3470214)-+-bash(3470402)---sleep(3470906)
+           |            |                                                  `-ssh(3470403)
+rgangs=5   seconds since start=11
+           |-python3(3469356)-+-bash(3469544)---sleep(3470885)
+           |                  `-ssh(3469545)
+           |-sshd(4611)-+-sshd(3469554)---sshd(3469641)---python3(3469642)-+-bash(3469830)---sleep(3470887)
+           |            |                                                  `-ssh(3469831)
+           |            |-sshd(3469840)---sshd(3469927)---python3(3469928)-+-bash(3470116)---sleep(3470889)
+           |            |                                                  `-ssh(3470117)
+           |            |-sshd(3470126)---sshd(3470213)---python3(3470214)-+-bash(3470402)---sleep(3470906)
+           |            |                                                  `-ssh(3470403)
+rgangs=3   seconds since start=15
+           |-python3(3469928)-+-bash(3470116)---sleep(3470889)
+           |                  `-ssh(3470117)
+           |-sshd(4611)-+-sshd(3470126)---sshd(3470213)---python3(3470214)-+-bash(3470402)---sleep(3470906)
+           |            |                                                  `-ssh(3470403)
+           |            `-sshd(3470412)---sshd(3470499)---python3(3470500)---bash(3470688)---sleep(3470922)
+rgangs=0   seconds since start=18
+test_ctrl_c OK
+loop start: netstat -t | grep WAIT | wc -l  ==> 59
+num_nodes=12
+executing:  '../bin/rgang.py' '--nway=3' 'localhost{,,,}{,,}' 'echo $RGANG_MACH_ID - hi;sleep 5;sleep `expr 4 \* \( 12 - $RGANG_MACH_ID \)`;echo there' >|stdout 2>|stderr
+           |            |-sshd(3470995)---sshd(3471009)---python3(3471095)-+-bash(3471740)---sleep(3472748)
+           |            |                                                  |-ssh(3471742)
+           |            |                                                  `-ssh(3471744)
+           |            |-sshd(3470996)---sshd(3471007)---python3(3471070)-+-bash(3471731)---sleep(3472746)
+           |            |                                                  |-ssh(3471735)
+           |            |                                                  |-ssh(3471739)
+           |            |                                                  `-ssh(3471741)
+           |            |-sshd(3470997)---sshd(3471006)---python3(3471010)-+-bash(3471658)---sleep(3472744)
+rgang_pid=3470984
+|
+sub_processes=4 sigs_sent=4 exited=4
+
+another ^C to stop output in 3rgangs=3
+           |-python3(3471010)-+-bash(3471658)---sleep(3472744)
+           |                  |-ssh(3471659)
+           |                  |-ssh(3471660)
+           |                  `-ssh(3471661)
+           |-python3(3471070)-+-bash(3471731)---sleep(3472746)
+           |                  |-ssh(3471735)
+           |                  |-ssh(3471739)
+           |                  `-ssh(3471741)
+rgangs=0   seconds since start=11
+test_ctrl_c OK
+3472802 pts/1    S+     0:00 /bin/sh ./test.sh big_ssh_output
+
+
+test huge output --
+a lot of output (catting the big rgang python source file :)
+with a lot of nodes -- there actually may be some errors so
+I really can not count bytes
+Note (2010.05.06): to avoid:
+  ssh_exchange_identification: Connection closed by remote host
+change /etc/sshd_config-localhost OR /etc/sshd_config-127.0.0.1
+MaxStartups from default 10 to 100
+Note: system (if all localhost nodes used) should have about 3 GB RAM.
+WARNING - localhost sshd not running
+
+nodes_num=96
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--path=/tmp:/usr/bin' '-n0' '--nway=20' 'localhost{,,,}{,,}{,,,,,,,}' 'cat /tmp/rgang.py' >|stdout 2>|stderr
+
+real	0m26.303s
+user	0m2.765s
+sys	0m0.909s
+-rw-rw-r--. 1 ron ron 13736640 Dec 12 10:30 stdout
+big_ssh_output OK
+3485999 pts/1    S+     0:00 /bin/sh ./test.sh big_ssh
+
+
+test big ssh
+
+Note: currently (2008.05.23) with the localhost ssh setup on
+my laptop, it seems if too many ssh's happen too fast, a
+  ssh_exchange_identification: Connection closed by remote host
+error happens.
+Seem things work better with a lower --nway and a .rgangrc with:
+    sleep `python -c 'import random;print random.randint(0,70)/10.0'`
+
+2010.05.06 - changing /etc/sshd_config-127.0.0.1 MaxStartups from the default
+   value of 10 really helps.  May also want to try increasing the value of
+   /proc/sys/net/core/somaxconn from the default of 128 up to 512 or so.
+
+To just print graphs, use:
+    ./test.sh -q big_ssh
+
+WARNING - sshd with "-f *-localhost" not running
+contents of $HOME/.rgangrc (between "-----------"):
+-----------
+#export LD_LIBRARY_PATH=/p/python/v3_9_2/Linux64bit+3.10-2.17/lib:/p/sqlite/v3_34_01_00/Linux64bit+3.10-2.17/lib
+sleep `python -c 'import random;print(random.randint(0,70)/10.0)'`
+-----------
+
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=3' '--err-file=err-file' 'localhost{,,,}{,,,}{,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m21.091s
+user	0m0.344s
+sys	0m0.054s
+completed node_num=32
+errors=0
+oks=32
+TIME_WAIT=143
+----------
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=3' '--err-file=err-file' 'localhost{,,,}{,,,}{,,,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m25.408s
+user	0m0.355s
+sys	0m0.044s
+completed node_num=64
+errors=0
+oks=64
+TIME_WAIT=193
+----------
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=3' '--err-file=err-file' 'localhost{,,,}{,,,}{,,,}{,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m31.255s
+user	0m0.351s
+sys	0m0.045s
+completed node_num=128
+errors=0
+oks=128
+TIME_WAIT=202
+----------
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=3' '--err-file=err-file' 'localhost{,,,}{,,,}{,,,}{,,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m41.328s
+user	0m0.366s
+sys	0m0.056s
+completed node_num=192
+errors=0
+oks=192
+TIME_WAIT=317
+----------
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=3' '--err-file=err-file' 'localhost{,,,}{,,,}{,,,}{,,,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m50.524s
+user	0m0.357s
+sys	0m0.053s
+completed node_num=256
+errors=0
+oks=256
+TIME_WAIT=384
+----------
+                                                                               
+                                                                               
+                          rgang command (--nway=3)                             
+                            ERR/OK vs. num_nodes                               
+                           cmd_time vs. num_nodes                              
+     300 +---------------------------------------------------------+ 55        
+         |         +        +         +         +        +         |           
+     250 |-+   OK    A                                    C      +-| 50        
+         |    ERR    B                                             |           
+         |time(s)    C                                           +-| 45        
+     200 |-+                                  A                    |           
+         |                                    C                  +-| 40        
+     150 |-+                                                       |           
+         |                                                         | rgang cmd 
+         |                        A                              ti|e (seconds)
+     100 |-+                      C                                |           
+         |                                                       +-| 30        
+      50 |-+         A                                             |           
+         |     A     C                                           +-| 25        
+         |         +        +         +         +        +         |           
+       0 +---------------------------------------------------------+ 20        
+         0         50      100       150       200      250       300          
+                  (total) nodes in individual rgang command                    
+                                                                               
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=5' '--err-file=err-file' 'localhost{,,,}{,,,}{,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m14.208s
+user	0m0.547s
+sys	0m0.082s
+completed node_num=32
+errors=0
+oks=32
+TIME_WAIT=289
+----------
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=5' '--err-file=err-file' 'localhost{,,,}{,,,}{,,,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m18.438s
+user	0m0.558s
+sys	0m0.067s
+completed node_num=64
+errors=0
+oks=64
+TIME_WAIT=343
+----------
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=5' '--err-file=err-file' 'localhost{,,,}{,,,}{,,,}{,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m22.245s
+user	0m0.566s
+sys	0m0.066s
+completed node_num=128
+errors=0
+oks=128
+TIME_WAIT=268
+----------
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=5' '--err-file=err-file' 'localhost{,,,}{,,,}{,,,}{,,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m35.901s
+user	0m0.566s
+sys	0m0.068s
+completed node_num=192
+errors=0
+oks=192
+TIME_WAIT=325
+----------
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=5' '--err-file=err-file' 'localhost{,,,}{,,,}{,,,}{,,,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m46.676s
+user	0m0.580s
+sys	0m0.067s
+completed node_num=256
+errors=0
+oks=256
+TIME_WAIT=388
+----------
+                                                                               
+                                                                               
+                          rgang command (--nway=5)                             
+                            ERR/OK vs. num_nodes                               
+                           cmd_time vs. num_nodes                              
+     300 +---------------------------------------------------------+ 50        
+         |         +        +         +         +        +C        |           
+     250 |-+   OK    A                                    A      +-| 45        
+         |    ERR    B                                             |           
+         |time(s)    C                                           +-| 40        
+     200 |-+                                  C                    |           
+         |                                                       +-| 35        
+     150 |-+                                                     +-| 30        
+         |                                                         | rgang cmd 
+         |                        A                              ti|e (seconds)
+     100 |-+                      C                                |           
+         |                                                       +-| 20        
+      50 |-+         C                                             |           
+         |     C                                                 +-| 15        
+         |         +        +         +         +        +         |           
+       0 +---------------------------------------------------------+ 10        
+         0         50      100       150       200      250       300          
+                  (total) nodes in individual rgang command                    
+                                                                               
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=20' '--err-file=err-file' 'localhost{,,,}{,,,}{,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m14.062s
+user	0m1.873s
+sys	0m0.238s
+completed node_num=32
+errors=0
+oks=32
+TIME_WAIT=289
+----------
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=20' '--err-file=err-file' 'localhost{,,,}{,,,}{,,,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m14.743s
+user	0m1.878s
+sys	0m0.243s
+completed node_num=64
+errors=0
+oks=64
+TIME_WAIT=342
+----------
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=20' '--err-file=err-file' 'localhost{,,,}{,,,}{,,,}{,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m18.933s
+user	0m1.896s
+sys	0m0.232s
+completed node_num=128
+errors=0
+oks=128
+TIME_WAIT=391
+----------
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=20' '--err-file=err-file' 'localhost{,,,}{,,,}{,,,}{,,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m25.736s
+user	0m1.925s
+sys	0m0.212s
+completed node_num=192
+errors=0
+oks=192
+TIME_WAIT=398
+----------
+executing:  '../bin/rgang.py' '--rsh=ssh -xKF/dev/null -oStrictHostKeyChecking=no' '--nway=20' '--err-file=err-file' 'localhost{,,,}{,,,}{,,,}{,,,}' 'cd /home/ron/work2/rgangPrj/rgang.fermitools/test;echo $RGANG_MACH_ID - hi | tee rgang_test/$RGANG_MACH_ID' >|stdout 2>|stderr
+
+real	0m32.047s
+user	0m1.909s
+sys	0m0.241s
+completed node_num=256
+errors=0
+oks=256
+TIME_WAIT=490
+----------
+                                                                               
+                                                                               
+                          rgang command (--nway=20)                            
+                            ERR/OK vs. num_nodes                               
+                           cmd_time vs. num_nodes                              
+     300 +---------------------------------------------------------+ 32        
+         |         +        +         +         +        +         |           
+     250 |-+   OK    A                                    A      +-| 30        
+         |    ERR    B                                           +-| 28        
+         |time(s)    C                                             |           
+     200 |-+                                  C                  +-| 26        
+         |                                                         |           
+     150 |-+                                                     +-| 24        
+         |                                                       +-| rgang cmd 
+         |                        A                              ti|e (seconds)
+     100 |-+                                                     +-| 20        
+         |                        C                                |           
+      50 |-+         A                                           +-| 18        
+         |     A                                                 +-| 16        
+         |         + C      +         +         +        +         |           
+       0 +---------------------------------------------------------+ 14        
+         0         50      100       150       200      250       300          
+                  (total) nodes in individual rgang command                    
+                                                                               
+TIME_WAIT=492
+test_completed=16
+Note: with nodespec="localhost{,,,}{,,}", sockets in TIME_WAIT at this
+point could be about 550. It is: 492
+
+All is well
+
+real	10m46.338s
+user	0m44.780s
+sys	0m12.255s
