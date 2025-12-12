@@ -79,7 +79,7 @@ opts_w_args='add|nodes|rgang'
 opts_wo_args='v|q'
 USAGE="\
    usage: $0 [opts] <all|most|test [test]...>
-examples: $0 all       # probably want to do this
+examples: (time $0 all)2>&1|tee test.sh-all.out.txt  # probably want to do this
           $0 --rgang ../bin/rgang.py most
           RGANG_RSH='/bin/ssh -x' ./test.sh --rgang ../bin/rgang.py most
           $0 --add \"fnapcf{,,}\" all
@@ -89,6 +89,7 @@ opts_wo_args=\"$opts_wo_args\"
 Quick note: ssh-agent (if used) will likely not work with multiple/simultaneous ssh clients, i.e. this test.
 tests are:
 `grep '^ *[a-z_]\{2,\})' $0 | sed 's/)//'`
+\"most\" will not do invalid_rsh and big_ssh (which is [likely] 256+ nodes).
 "
 while op=`expr "${1-}" : '-\(.*\)'`;do
     opts="${opts-} -$op"; shift
@@ -199,8 +200,11 @@ test_base()
 }
 
 test_version()
-{   cmd $RGANG --version
+{   echo "test version..."
+    date
+    cmd $RGANG --version
     if [ $? -ne 0 ];then echo test_version FAILURE;exit 1;fi
+    cat stdout
 }
 
 test_stdout()
@@ -645,7 +649,7 @@ test_ctrl_c()
 Note: (double) control-C functionality when --nway is less than the number of
 nodes is "iffy". One would perhaps hope that a control-C (SIGINT) of an rsh/ssh would
 cause a control-c (SIGINT) signal to be propagated to the remote command.
-Thats is what seems to happen when I do something like:
+That is what seems to happen when I do something like:
    $ rsh localhost rsh localhost rsh localhost '"'"'echo hi;sleep 30;echo there'"'"'
    hi
    ^C
@@ -695,8 +699,8 @@ script.
         else             sleep 7.5;fi
         pstree_python
         xxx=`descendants $parent 2>&1`
-        #echo "$xxx"
-        rgang_pid=`echo "$xxx" | sed -n '/python/{s/.*python(//;s/).*//;p}'`
+        #echo "xxx=$xxx"
+        rgang_pid=`echo "$xxx" | sed -n '/python/{s/.*python[2-9]*(//;s/).*//;p}'`
         echo rgang_pid=$rgang_pid
         if [ "$rgang_pid" ];then
             kill -INT $rgang_pid
@@ -922,6 +926,8 @@ plot \"plot.dat\" u 1:2 t \" OK\",\
 
 ######################################################################################################
 
+test $# -gt 1 && echo "Doing tests: $*"
+
 while [ "${1-}" ];do
     test=$1;shift
     case $test in
@@ -958,6 +964,7 @@ while [ "${1-}" ];do
     big_ssh)
         test_big_ssh;;
     most)
+        echo "From `hostname -s`, doing \"most\" tests..."
         echo "nodespec=$nodespec specifies $expect_nodes nodes"
         $0 --nodes "$nodespec" --rgang $RGANG $most
         _status=$?
@@ -966,8 +973,9 @@ while [ "${1-}" ];do
         fi
         ;;
     all)
-        echo "nodespec=$nodespec specifies $expect_nodes nodes"
         tests=`grep '^ *[a-z_]\{2,\})' $0 | sed 's/).*//' | egrep -v ' (all|most)'`
+        echo "From `hostname -s`, doing \"all\" tests: $tests"
+        echo "nodespec=$nodespec specifies $expect_nodes nodes"
         test_completed=0
         for test in $tests;do
             $0 ${opt_rgang+--rgang $opt_rgang} $test
